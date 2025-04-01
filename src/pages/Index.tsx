@@ -7,7 +7,7 @@ import QuestionCard from "@/components/QuestionCard";
 const Index = () => {
   const { hasContributed, questions } = useQA();
   
-  // Get top 3 questions based on votes
+  // Get top 3 questions based on votes if any exist
   const topQuestions = [...questions]
     .sort((a, b) => b.upvotes - a.upvotes)
     .slice(0, 3);
