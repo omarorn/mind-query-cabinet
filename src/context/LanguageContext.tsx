@@ -150,6 +150,16 @@ const translations: Translations = {
     en: 'No more upvotes remaining today', 
     is: 'Engin fleiri uppatkvæði eftir í dag' 
   },
+  
+  // New translations for AI Question generation
+  generateAIQuestion: { 
+    en: 'Generate AI Question', 
+    is: 'Búa til gervigreindspurningu' 
+  },
+  generating: { 
+    en: 'Generating...', 
+    is: 'Bý til...' 
+  },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

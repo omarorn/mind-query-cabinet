@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -10,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import AttachmentInput from "@/components/AttachmentInput";
 import DualText from "@/components/DualText";
 import { useLanguage } from "@/context/LanguageContext";
+import AIQuestionButton from "@/components/AIQuestionButton";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -99,6 +99,12 @@ const Contribute = () => {
       navigate("/browse");
     }
   };
+
+  const handleAIQuestionGenerated = (title: string, content: string) => {
+    setQuestionTitle(title);
+    setQuestionContent(content);
+    setActiveTab("question");
+  };
   
   return (
     <Layout>
@@ -169,6 +175,10 @@ const Contribute = () => {
                   </p>
                 </div>
               )}
+
+              <div className="mt-6">
+                <AIQuestionButton onQuestionGenerated={handleAIQuestionGenerated} />
+              </div>
             </div>
             
             <div className="qa-card">
