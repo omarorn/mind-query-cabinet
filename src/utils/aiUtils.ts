@@ -1,4 +1,3 @@
-
 interface GeminiResponse {
   candidates: Array<{
     content: {
@@ -11,18 +10,18 @@ interface GeminiResponse {
 
 import { getGeminiKey } from "./keyUtils";
 
-export const generateQuestionWithAI = async (prompt: string = "Generate an interesting question for a Q&A platform"): Promise<{ title: string; content: string; source?: string; imageUrl?: string } | null> => {
+export const generateQuestionWithAI = async (prompt: string = "Búðu til áhugaverða spurningu fyrir spurningar og svör vettvang"): Promise<{ title: string; content: string; source?: string; imageUrl?: string } | null> => {
   try {
     // Get the API key from storage
     const apiKey = getGeminiKey();
     
     if (!apiKey) {
-      console.error('Gemini API key is missing');
-      throw new Error('API key is missing. Please add your Gemini API key in the settings.');
+      console.error('Gemini API lykill vantar');
+      throw new Error('API lykil vantar. Vinsamlegast settu inn Gemini API lykilinn þinn í stillingum.');
     }
     
-    // Include Icelandic language in the prompt
-    const icelandicPrompt = `${prompt} in Icelandic. Also include a source link (fictional is fine) and suggest an image that would go well with this question.`;
+    // Use Icelandic in the prompt
+    const icelandicPrompt = `${prompt} á íslensku. Bættu við heimild (tilbúin er í lagi) og stingdu upp á mynd sem myndi passa vel við þessa spurningu.`;
     
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
@@ -41,14 +40,14 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Gemini API error:', errorData);
-      throw new Error(`API call failed: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+      console.error('Gemini API villa:', errorData);
+      throw new Error(`API kall mistókst: ${response.status} - ${errorData.error?.message || 'Óþekkt villa'}`);
     }
 
     const data: GeminiResponse = await response.json();
     
     if (!data.candidates || data.candidates.length === 0) {
-      throw new Error('No response from AI');
+      throw new Error('Ekkert svar frá gervigreind');
     }
     
     const generatedText = data.candidates[0].content.parts[0].text;
@@ -57,7 +56,7 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
     const lines = generatedText.split('\n').filter(line => line.trim());
     
     // Use the first line as the title and extract the rest
-    const title = lines[0].replace(/^(question:|q:|title:)/i, '').trim();
+    const title = lines[0].replace(/^(spurning:|sp:|titill:)/i, '').trim();
     
     // Look for source and image in the response
     let content = '';
@@ -66,9 +65,9 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
     
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].toLowerCase();
-      if (line.includes('source:') || line.includes('heimild:') || line.includes('link:') || line.includes('tengill:')) {
+      if (line.includes('heimild:') || line.includes('link:') || line.includes('tengill:')) {
         source = lines[i].split(':').slice(1).join(':').trim();
-      } else if (line.includes('image:') || line.includes('mynd:') || line.includes('picture:')) {
+      } else if (line.includes('mynd:') || line.includes('picture:') || line.includes('image:')) {
         imageUrl = lines[i].split(':').slice(1).join(':').trim();
         // Default image if none is provided
         if (!imageUrl || imageUrl.length < 5) {
@@ -80,13 +79,13 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
     }
     
     return { 
-      title: title || "AI Generated Question", 
+      title: title || "Spurning frá gervigreind", 
       content: content.trim() || "Hvað eru þínar hugsanir um þetta efni?",
       source,
       imageUrl
     };
   } catch (error) {
-    console.error('Error generating question with AI:', error);
+    console.error('Villa við að búa til spurningu með gervigreind:', error);
     return null;
   }
 };
@@ -97,14 +96,14 @@ export const generateAnswerWithAI = async (questionTitle: string, questionConten
     const apiKey = getGeminiKey();
     
     if (!apiKey) {
-      console.error('Gemini API key is missing');
-      throw new Error('API key is missing. Please add your Gemini API key in the settings.');
+      console.error('Gemini API lykill vantar');
+      throw new Error('API lykil vantar. Vinsamlegast settu inn Gemini API lykilinn þinn í stillingum.');
     }
     
-    const prompt = `Generate a witty, insightful answer to this question. Be creative but informative.
+    const prompt = `Búðu til skemmtilegt og upplýsandi svar við þessari spurningu. Vertu skapandi en fræðandi. Skrifaðu á íslensku.
     
-Question title: ${questionTitle}
-Question content: ${questionContent}`;
+Titill spurningar: ${questionTitle}
+Efni spurningar: ${questionContent}`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
@@ -123,20 +122,20 @@ Question content: ${questionContent}`;
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Gemini API error:', errorData);
-      throw new Error(`API call failed: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+      console.error('Gemini API villa:', errorData);
+      throw new Error(`API kall mistókst: ${response.status} - ${errorData.error?.message || 'Óþekkt villa'}`);
     }
 
     const data: GeminiResponse = await response.json();
     
     if (!data.candidates || data.candidates.length === 0) {
-      throw new Error('No response from AI');
+      throw new Error('Ekkert svar frá gervigreind');
     }
     
     const generatedText = data.candidates[0].content.parts[0].text;
     return generatedText.trim();
   } catch (error) {
-    console.error('Error generating answer with AI:', error);
+    console.error('Villa við að búa til svar með gervigreind:', error);
     return null;
   }
 };

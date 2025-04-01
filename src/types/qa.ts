@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   name: string;
@@ -42,18 +41,27 @@ export interface Answer {
 }
 
 export type QuestionCategory = 
-  | 'animals'
-  | 'space'
-  | 'nature'
-  | 'science'
-  | 'history'
-  | 'art'
-  | 'music'
-  | 'food'
-  | 'books'
-  | 'games'
-  | 'puzzles'
+  | 'animals' 
+  | 'space' 
+  | 'nature' 
+  | 'science' 
+  | 'history' 
+  | 'art' 
+  | 'music' 
+  | 'food' 
+  | 'books' 
+  | 'games' 
+  | 'puzzles' 
   | 'funnyFacts'
   | 'magic'
   | 'rainbow'
+  | 'technology'
+  | 'culture'
+  | 'education'
+  | 'sports'
+  | 'entertainment'
+  | 'travel'
+  | 'business'
+  | 'health'
+  | 'language'
   | 'surprise';
