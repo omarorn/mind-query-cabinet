@@ -1,19 +1,14 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useQA } from "@/context/QAContext";
-import { useLanguage } from "@/context/LanguageContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import AttachmentInput from "@/components/AttachmentInput";
-import DualText from "@/components/DualText";
-import AIQuestionButton from "@/components/AIQuestionButton";
 import MagicButton from "@/components/MagicButton";
-import AutomagicAnswer from "@/components/AutomagicAnswer";
+import UserCreationForm from "@/components/contribute/UserCreationForm";
+import ContributionStats from "@/components/contribute/ContributionStats";
+import ContributionTabs from "@/components/contribute/ContributionTabs";
 import { generateAnswerWithAI } from "@/utils/aiUtils";
-import { Laugh } from "lucide-react";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -28,9 +23,7 @@ const Contribute = () => {
     userAnswerCount, 
     hasContributed 
   } = useQA();
-  const { t } = useLanguage();
   
-  const [name, setName] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionContent, setQuestionContent] = useState("");
   const [selectedQuestionId, setSelectedQuestionId] = useState("");
@@ -43,19 +36,6 @@ const Contribute = () => {
     name?: string;
   } | null>(null);
   const [magicMode, setMagicMode] = useState(false);
-  
-  const handleCreateUser = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter your name",
-        variant: "destructive"
-      });
-      return;
-    }
-    createUser(name.trim());
-  };
   
   const handleAddQuestion = (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,207 +130,44 @@ const Contribute = () => {
     <Layout>
       <div className="max-w-3xl mx-auto relative">
         <h1 className="text-3xl font-bold mb-6 text-qa-text">
-          <DualText textKey="contributeTitle" className="block" />
+          <div className="grid grid-cols-2 gap-2 block">
+            <div className="text-left">{useQA().t("contributeTitle").en}</div>
+            <div className="text-left">{useQA().t("contributeTitle").is}</div>
+          </div>
         </h1>
         
         {!user ? (
-          <div className="qa-card">
-            <h2 className="text-xl font-semibold mb-4">
-              <DualText textKey="getStarted" />
-            </h2>
-            <form onSubmit={handleCreateUser}>
-              <div className="mb-4">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  <DualText textKey="yourName" />
-                </label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={t("enterYourName").en}
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                <DualText textKey="createAccount" />
-              </Button>
-            </form>
-          </div>
+          <UserCreationForm createUser={createUser} />
         ) : (
           <>
-            <div className="qa-card mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">
-                  <DualText textKey="yourContributions" />
-                </h2>
-                <div className="text-sm bg-qa-primary/10 text-qa-primary px-3 py-1 rounded-full">
-                  {userQuestionCount + userAnswerCount}/3 <DualText textKey="required" />
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 p-4 border rounded-md bg-gray-50">
-                  <div className="text-2xl font-bold text-qa-primary">{userQuestionCount}</div>
-                  <DualText textKey="questions" className="text-gray-600" />
-                </div>
-                <div className="flex-1 p-4 border rounded-md bg-gray-50">
-                  <div className="text-2xl font-bold text-qa-secondary">{userAnswerCount}</div>
-                  <DualText textKey="answers" className="text-gray-600" />
-                </div>
-                <div className="flex-1 p-4 border rounded-md bg-gray-50">
-                  <div className="text-2xl font-bold text-qa-accent">
-                    <DualText textKey={hasContributed ? "yes" : "notYet"} />
-                  </div>
-                  <DualText textKey="fullAccess" className="text-gray-600" />
-                </div>
-              </div>
-              
-              {hasContributed && (
-                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-800">
-                  <p className="font-medium">
-                    <DualText textKey="congratulations" />
-                  </p>
-                  <p>
-                    <DualText textKey="contributionComplete" />
-                  </p>
-                </div>
-              )}
-
-              <div className="mt-6">
-                <AIQuestionButton onQuestionGenerated={handleAIQuestionGenerated} magicMode={magicMode} />
-              </div>
-            </div>
+            <ContributionStats
+              userQuestionCount={userQuestionCount}
+              userAnswerCount={userAnswerCount}
+              hasContributed={hasContributed}
+              onQuestionGenerated={handleAIQuestionGenerated}
+              magicMode={magicMode}
+            />
             
-            <div className="qa-card">
-              <div className="flex border-b mb-6">
-                <button
-                  className={`px-4 py-2 font-medium ${
-                    activeTab === "question" 
-                      ? "border-b-2 border-qa-primary text-qa-primary" 
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setActiveTab("question")}
-                >
-                  <DualText textKey="askQuestion" />
-                </button>
-                <button
-                  className={`px-4 py-2 font-medium ${
-                    activeTab === "answer" 
-                      ? "border-b-2 border-qa-primary text-qa-primary" 
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setActiveTab("answer")}
-                >
-                  <DualText textKey="answerQuestion" />
-                </button>
-              </div>
-              
-              {activeTab === "question" ? (
-                <form onSubmit={handleAddQuestion}>
-                  <div className="mb-4">
-                    <label htmlFor="questionTitle" className="block text-sm font-medium text-gray-700 mb-1">
-                      <DualText textKey="questionTitle" />
-                    </label>
-                    <Input
-                      id="questionTitle"
-                      value={questionTitle}
-                      onChange={(e) => setQuestionTitle(e.target.value)}
-                      placeholder={t("questionTitlePlaceholder").en}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label htmlFor="questionContent" className="block text-sm font-medium text-gray-700 mb-1">
-                      <DualText textKey="questionDetails" />
-                    </label>
-                    <Textarea
-                      id="questionContent"
-                      value={questionContent}
-                      onChange={(e) => setQuestionContent(e.target.value)}
-                      placeholder={t("questionDetailsPlaceholder").en}
-                      rows={5}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label htmlFor="questionArticle" className="block text-sm font-medium text-gray-700 mb-1">
-                      <DualText textKey="articleFacts" />
-                    </label>
-                    <Textarea
-                      id="questionArticle"
-                      value={questionArticle}
-                      onChange={(e) => setQuestionArticle(e.target.value)}
-                      placeholder={t("articleFactsPlaceholder").en}
-                      rows={3}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      <DualText textKey="articleFactsHelp" />
-                    </p>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      <DualText textKey="attachments" />
-                    </label>
-                    <AttachmentInput 
-                      onAttachmentChange={setQuestionAttachment} 
-                    />
-                  </div>
-                  
-                  <Button type="submit" className="w-full">
-                    <DualText textKey="submitQuestion" />
-                  </Button>
-                </form>
-              ) : (
-                <form onSubmit={handleAddAnswer}>
-                  <div className="mb-4">
-                    <label htmlFor="questionSelect" className="block text-sm font-medium text-gray-700 mb-1">
-                      <DualText textKey="selectQuestion" />
-                    </label>
-                    <select
-                      id="questionSelect"
-                      value={selectedQuestionId}
-                      onChange={(e) => setSelectedQuestionId(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-qa-primary"
-                      required
-                    >
-                      <option value="">{t("selectQuestionPlaceholder").en}</option>
-                      {questions.map(question => (
-                        <option key={question.id} value={question.id}>
-                          {question.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {magicMode && selectedQuestionId && (
-                    <div className="mb-4">
-                      <AutomagicAnswer onGenerate={handleGenerateAnswer} />
-                    </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <label htmlFor="answerContent" className="block text-sm font-medium text-gray-700 mb-1">
-                      <DualText textKey="yourAnswer" />
-                    </label>
-                    <Textarea
-                      id="answerContent"
-                      value={answerContent}
-                      onChange={(e) => setAnswerContent(e.target.value)}
-                      placeholder={t("yourAnswerPlaceholder").en}
-                      rows={5}
-                      required
-                    />
-                  </div>
-                  
-                  <Button type="submit" className="w-full">
-                    <DualText textKey="submitAnswer" />
-                  </Button>
-                </form>
-              )}
-            </div>
+            <ContributionTabs
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              questions={questions}
+              questionTitle={questionTitle}
+              questionContent={questionContent}
+              questionArticle={questionArticle}
+              selectedQuestionId={selectedQuestionId}
+              answerContent={answerContent}
+              magicMode={magicMode}
+              onQuestionTitleChange={setQuestionTitle}
+              onQuestionContentChange={setQuestionContent}
+              onQuestionArticleChange={setQuestionArticle}
+              onQuestionSelect={setSelectedQuestionId}
+              onAnswerChange={setAnswerContent}
+              onAttachmentChange={setQuestionAttachment}
+              onGenerateAnswer={handleGenerateAnswer}
+              onQuestionSubmit={handleAddQuestion}
+              onAnswerSubmit={handleAddAnswer}
+            />
           </>
         )}
         
