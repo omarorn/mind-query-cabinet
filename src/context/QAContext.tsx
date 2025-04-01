@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Question, Answer, User } from '@/types/qa';
@@ -11,7 +10,7 @@ interface QAContextType {
   answers: Answer[];
   hasContributed: boolean;
   dailyVotesRemaining: number;
-  createUser: (name: string) => void;
+  createUser: (name: string, isAdmin?: boolean) => void;
   addQuestion: (
     title: string, 
     content: string, 
@@ -25,6 +24,8 @@ interface QAContextType {
   addAnswer: (questionId: string, content: string) => void;
   voteQuestion: (questionId: string, voteType: 'up') => void;
   voteAnswer: (answerId: string, voteType: 'up') => void;
+  resetVoteCount: () => void;
+  postQuestion: (questionId: string, answerId: string) => Promise<void>;
   userQuestionCount: number;
   userAnswerCount: number;
 }
@@ -76,10 +77,11 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     localStorage.setItem('qa-daily-votes', JSON.stringify(dailyVotes));
   }, [user, questions, answers, hasContributed, dailyVotes]);
 
-  const createUser = (name: string) => {
+  const createUser = (name: string, isAdmin: boolean = false) => {
     const newUser = {
       id: uuidv4(),
-      name
+      name,
+      isAdmin
     };
     setUser(newUser);
     toast({
@@ -249,6 +251,87 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     }));
   };
 
+  const resetVoteCount = () => {
+    if (!user?.isAdmin) {
+      toast({
+        title: "Permission Denied",
+        description: "Only administrators can reset vote counts.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setDailyVotes({
+      date: new Date().toDateString(),
+      count: 0
+    });
+    
+    toast({
+      title: "Votes Reset",
+      description: "Daily vote count has been reset successfully.",
+    });
+  };
+
+  const postQuestion = async (questionId: string, answerId: string) => {
+    if (!user?.isAdmin) {
+      toast({
+        title: "Permission Denied",
+        description: "Only administrators can post questions.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const question = questions.find(q => q.id === questionId);
+      const answer = answers.find(a => a.id === answerId);
+      
+      if (!question || !answer) {
+        toast({
+          title: "Error",
+          description: "Question or answer not found.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await fetch('/api/creatomate-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: question.title,
+          answer: answer.content
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to post content');
+      }
+
+      // Update the question's posted status
+      setQuestions(questions.map(q => {
+        if (q.id === questionId) {
+          return { ...q, posted: true };
+        }
+        return q;
+      }));
+
+      toast({
+        title: "Posted Successfully",
+        description: "The question and answer have been posted.",
+      });
+    } catch (error) {
+      console.error('Error posting content:', error);
+      toast({
+        title: "Error",
+        description: "Failed to post content. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const userQuestionCount = user 
     ? questions.filter(q => q.authorId === user.id).length 
     : 0;
@@ -285,6 +368,8 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       addAnswer, 
       voteQuestion, 
       voteAnswer,
+      resetVoteCount,
+      postQuestion,
       userQuestionCount,
       userAnswerCount
     }}>

@@ -2,6 +2,7 @@
 export interface User {
   id: string;
   name: string;
+  isAdmin?: boolean;
 }
 
 export interface Question {
@@ -20,6 +21,7 @@ export interface Question {
     name?: string;
   };
   article?: string;
+  posted?: boolean;
 }
 
 export interface Answer {

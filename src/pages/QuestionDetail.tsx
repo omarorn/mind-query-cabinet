@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -11,6 +10,7 @@ import { ThumbsUp, File, FileVideo, Link, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DualText from "@/components/DualText";
 import { useLanguage } from "@/context/LanguageContext";
+import AdminControls from "@/components/AdminControls";
 
 const QuestionDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -214,6 +214,10 @@ const QuestionDetail = () => {
               </Button>
             </form>
           </div>
+        )}
+        
+        {user?.isAdmin && (
+          <AdminControls question={question} answers={questionAnswers} />
         )}
       </div>
     </Layout>

@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useQA } from "@/context/QAContext";
@@ -9,7 +8,7 @@ const Index = () => {
   
   // Get top 3 questions based on votes
   const topQuestions = [...questions]
-    .sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
+    .sort((a, b) => b.upvotes - a.upvotes)
     .slice(0, 3);
   
   return (
