@@ -20,10 +20,12 @@ serve(async (req) => {
 
     if (!question || !answer) {
       return new Response(
-        JSON.stringify({ error: 'Question and answer are required' }),
+        JSON.stringify({ error: 'Spurning og svar eru nauðsynleg' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    console.log('Sending to Creatomate:', { question, answer });
 
     const response = await fetch('https://api.creatomate.com/v1/renders', {
       method: 'POST',
@@ -37,10 +39,16 @@ serve(async (req) => {
           "Question.text": question,
           "Answer.text": answer,
           "Shape.fill_color": "rgba(255,107,107,1)",
-          "Title.text": "Questions & Quizzes"
+          "Title.text": "Spurningar & Svör"
         }
       })
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Creatomate API error:', errorText);
+      throw new Error(`Creatomate API returned ${response.status}: ${errorText}`);
+    }
 
     const data = await response.json();
     

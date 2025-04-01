@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { QuestionCategory } from "@/types/qa";
 import { motion } from "framer-motion";
-import { Egg, Gift } from "lucide-react";
+import { Egg, Gift, Trash2 } from "lucide-react";
 
 const Browse = () => {
-  const { questions, answers, hasContributed, resetVoteCount, postQuestion, user } = useQA();
+  const { questions, answers, hasContributed, resetVoteCount, postQuestion, deleteQuestion, user } = useQA();
   const [selectedSort, setSelectedSort] = useState<"recent" | "popular">("recent");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const Browse = () => {
 
   // Filter questions
   const filteredQuestions = questions.filter(q => 
-    !selectedCategory || q.category === selectedCategory
+    (!selectedCategory || selectedCategory === "all" || q.category === selectedCategory)
   );
   
   // Sort filtered questions
@@ -69,6 +69,13 @@ const Browse = () => {
         audio.volume = 0.2;
         audio.play().catch(err => console.log("Audio couldn't play: ", err));
       }
+    }
+  };
+
+  const handleDeleteQuestion = (e: React.MouseEvent, questionId: string) => {
+    e.stopPropagation();
+    if (window.confirm('Ertu viss um að þú viljir eyða þessari spurningu?')) {
+      deleteQuestion(questionId);
     }
   };
   
@@ -164,7 +171,7 @@ const Browse = () => {
                     />
                     
                     {user?.isAdmin && (
-                      <div className="mt-2 flex justify-end">
+                      <div className="mt-2 flex justify-end gap-2">
                         {answers.some(a => a.questionId === question.id) && (
                           <Button 
                             size="sm" 
@@ -181,6 +188,14 @@ const Browse = () => {
                             {question.posted ? "Þegar birt" : "Birta á Creatomate"}
                           </Button>
                         )}
+                        
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={(e) => handleDeleteQuestion(e, question.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     )}
                   </div>

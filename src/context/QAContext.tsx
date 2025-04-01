@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Question, Answer, User, QuestionCategory } from '@/types/qa';
@@ -35,6 +34,8 @@ interface QAContextType {
   postQuestion: (questionId: string, answerId: string) => Promise<void>;
   userQuestionCount: number;
   userAnswerCount: number;
+  deleteQuestion: (questionId: string) => void;
+  addQuestionVotes: (questionId: string, amount: number) => void;
 }
 
 const QAContext = createContext<QAContextType | undefined>(undefined);
@@ -85,7 +86,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   }, [user, questions, answers, hasContributed, dailyVotes]);
 
   const createUser = (name: string, email: string = "", isAdmin: boolean = false) => {
-    // Check if email ends with @omaromar.net to automatically make them admin
     const isOmarOmarEmail = email.toLowerCase().endsWith('@omaromar.net');
     
     const newUser = {
@@ -107,7 +107,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       throw new Error("No user is logged in");
     }
     
-    // Check if email ends with @omaromar.net to automatically make them admin
     const isOmarOmarEmail = email.toLowerCase().endsWith('@omaromar.net');
     
     const updatedUser = {
@@ -117,7 +116,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       isAdmin: user.isAdmin || isOmarOmarEmail
     };
     
-    // Update questions with the new author name
     const updatedQuestions = questions.map(question => {
       if (question.authorId === user.id) {
         return {
@@ -128,7 +126,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       return question;
     });
     
-    // Update answers with the new author name
     const updatedAnswers = answers.map(answer => {
       if (answer.authorId === user.id) {
         return {
@@ -139,17 +136,14 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       return answer;
     });
     
-    // Update state
     setUser(updatedUser);
     setQuestions(updatedQuestions);
     setAnswers(updatedAnswers);
     
-    // Return a resolved promise to match the function signature
     return Promise.resolve();
   };
 
   const login = (email: string) => {
-    // If user exists, just update their status
     if (user) {
       const isOmarOmarEmail = email.toLowerCase().endsWith('@omaromar.net');
       const updatedUser = {
@@ -198,7 +192,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   ) => {
     if (!user) return;
     
-    // Easter egg detection in content
     const hasEasterEgg = 
       content.toLowerCase().includes("easter egg") || 
       content.toLowerCase().includes("secret") ||
@@ -223,7 +216,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     setQuestions([...questions, newQuestion]);
     checkContributionStatus();
     
-    // Special Easter egg toast for certain categories
     if (category === 'surprise' || hasEasterEgg) {
       toast({
         title: "✨ Special Question Added! ✨",
@@ -425,7 +417,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         throw new Error('Failed to post content');
       }
 
-      // Update the question's posted status
       setQuestions(questions.map(q => {
         if (q.id === questionId) {
           return { ...q, posted: true };
@@ -445,6 +436,55 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         variant: "destructive",
       });
     }
+  };
+
+  const deleteQuestion = (questionId: string) => {
+    if (!user?.isAdmin) {
+      toast({
+        title: "Aðgangi hafnað",
+        description: "Aðeins stjórnendur geta eytt spurningum.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const updatedAnswers = answers.filter(a => a.questionId !== questionId);
+    
+    const updatedQuestions = questions.filter(q => q.id !== questionId);
+    
+    setAnswers(updatedAnswers);
+    setQuestions(updatedQuestions);
+    
+    toast({
+      title: "Spurningu eytt",
+      description: "Spurningin hefur verið eytt ásamt öllum svörum.",
+    });
+  };
+
+  const addQuestionVotes = (questionId: string, amount: number) => {
+    if (!user?.isAdmin) {
+      toast({
+        title: "Aðgangi hafnað",
+        description: "Aðeins stjórnendur geta bætt við atkvæðum.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setQuestions(questions.map(question => {
+      if (question.id === questionId) {
+        return {
+          ...question,
+          upvotes: question.upvotes + amount
+        };
+      }
+      return question;
+    }));
+    
+    toast({
+      title: "Atkvæðum bætt við",
+      description: `${amount} atkvæðum bætt við spurninguna.`,
+    });
   };
 
   const userQuestionCount = user 
@@ -489,7 +529,9 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       resetVoteCount,
       postQuestion,
       userQuestionCount,
-      userAnswerCount
+      userAnswerCount,
+      deleteQuestion,
+      addQuestionVotes
     }}>
       {children}
     </QAContext.Provider>
