@@ -4,11 +4,12 @@ import { callGeminiAPI } from "./geminiAPI";
 export const simplifyForChildren = async (text: string): Promise<string | null> => {
   try {
     const prompt = `
-      Rewrite the following text so that a 7-year-old can understand it.
-      Use simple words, short sentences, and fun explanations.
-      Avoid complex terms and add examples that children can relate to.
+      Endurskrifaðu eftirfarandi texta þannig að 7 ára barn skilji hann.
+      Notaðu einföld orð, stuttar setningar og skemmtilegar útskýringar.
+      Bættu við dæmum sem börn geta tengt við og forðastu flókin hugtök.
+      Skrifaðu á íslensku með skemmtilegum og barnvænum tón.
       
-      Text: ${text}
+      Texti: ${text}
     `;
     
     console.log("Sending simplification prompt to Gemini:", prompt);
@@ -26,15 +27,15 @@ export const simplifyForChildren = async (text: string): Promise<string | null> 
 export const factCheckAnswer = async (question: string, answer: string): Promise<string | null> => {
   try {
     const prompt = `
-      Fact check the following answer to the given question.
-      Be thorough and point out any inaccuracies or misleading information.
-      If the answer is correct, confirm that the information is accurate.
+      Staðreyndaprófaðu eftirfarandi svar við gefna spurningu.
+      Vertu nákvæmur og bentu á allar ónákvæmni eða villandi upplýsingar.
+      Ef svarið er rétt, staðfestu að upplýsingarnar séu réttar.
       
-      Question: ${question}
-      Answer: ${answer}
+      Spurning: ${question}
+      Svar: ${answer}
       
-      Format your response as:
-      "Fact check: [Your detailed fact check]"
+      Hafðu svarið á forminu:
+      "Staðreyndakönnun: [Þín ítarlega staðreyndakönnun]"
     `;
     
     console.log("Sending fact-check prompt to Gemini:", prompt);
