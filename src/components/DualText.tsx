@@ -4,18 +4,24 @@ import { useLanguage } from '@/context/LanguageContext';
 
 interface DualTextProps {
   textKey: string;
+  fallback?: string;
   className?: string;
 }
 
-const DualText: React.FC<DualTextProps> = ({ textKey, className = '' }) => {
+const DualText: React.FC<DualTextProps> = ({ textKey, fallback, className = '' }) => {
   const { t } = useLanguage();
-  const { en, is } = t(textKey);
+  const translations = t(textKey);
+  
+  // If translations don't exist and a fallback is provided, create a temporary translation
+  const { en, is } = translations.en === textKey && fallback ? 
+    { en: fallback, is: fallback } : 
+    translations;
 
   return (
-    <div className={`grid grid-cols-2 gap-2 ${className}`}>
-      <div className="text-left">{en}</div>
-      <div className="text-left">{is}</div>
-    </div>
+    <span className={`grid grid-cols-2 gap-2 ${className}`}>
+      <span className="text-left">{en}</span>
+      <span className="text-left">{is}</span>
+    </span>
   );
 };
 
