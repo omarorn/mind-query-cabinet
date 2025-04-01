@@ -6,6 +6,7 @@ import { useToast } from '@/components/ui/use-toast';
 import DualText from '@/components/DualText';
 import { useQA } from '@/context/QAContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -30,7 +31,9 @@ const LoginForm: React.FC = () => {
   if (user?.email) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-sm">{user.email}</span>
+        <Link to="/profile" className="text-sm hover:underline">
+          {user.email}
+        </Link>
         <Button variant="outline" size="sm" onClick={logout}>
           <DualText textKey="logout" />
         </Button>

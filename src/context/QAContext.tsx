@@ -12,6 +12,7 @@ interface QAContextType {
   hasContributed: boolean;
   dailyVotesRemaining: number;
   createUser: (name: string, email?: string, isAdmin?: boolean) => void;
+  updateUser: (name: string, email: string) => Promise<void>;
   login: (email: string) => void;
   logout: () => void;
   addQuestion: (
@@ -98,6 +99,52 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       title: "Welcome!",
       description: `Hello ${name}, you can now start contributing!${isOmarOmarEmail ? ' You have been granted admin privileges.' : ''}`,
     });
+  };
+
+  const updateUser = async (name: string, email: string): Promise<void> => {
+    if (!user) {
+      throw new Error("No user is logged in");
+    }
+    
+    // Check if email ends with @omaromar.net to automatically make them admin
+    const isOmarOmarEmail = email.toLowerCase().endsWith('@omaromar.net');
+    
+    const updatedUser = {
+      ...user,
+      name,
+      email,
+      isAdmin: user.isAdmin || isOmarOmarEmail
+    };
+    
+    // Update questions with the new author name
+    const updatedQuestions = questions.map(question => {
+      if (question.authorId === user.id) {
+        return {
+          ...question,
+          authorName: name
+        };
+      }
+      return question;
+    });
+    
+    // Update answers with the new author name
+    const updatedAnswers = answers.map(answer => {
+      if (answer.authorId === user.id) {
+        return {
+          ...answer,
+          authorName: name
+        };
+      }
+      return answer;
+    });
+    
+    // Update state
+    setUser(updatedUser);
+    setQuestions(updatedQuestions);
+    setAnswers(updatedAnswers);
+    
+    // Return a resolved promise to match the function signature
+    return Promise.resolve();
   };
 
   const login = (email: string) => {
@@ -413,6 +460,7 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       hasContributed,
       dailyVotesRemaining,
       createUser,
+      updateUser,
       login, 
       logout, 
       addQuestion, 

@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import QuestionDetail from "./pages/QuestionDetail";
 import Contribute from "./pages/Contribute";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
               <Route path="/browse" element={<Browse />} />
               <Route path="/question/:id" element={<QuestionDetail />} />
               <Route path="/contribute" element={<Contribute />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
