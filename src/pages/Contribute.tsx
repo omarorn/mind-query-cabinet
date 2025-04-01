@@ -11,7 +11,9 @@ import AttachmentInput from "@/components/AttachmentInput";
 import DualText from "@/components/DualText";
 import AIQuestionButton from "@/components/AIQuestionButton";
 import MagicButton from "@/components/MagicButton";
+import AutomagicAnswer from "@/components/AutomagicAnswer";
 import { generateAnswerWithAI } from "@/utils/aiUtils";
+import { Laugh } from "lucide-react";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -325,14 +327,7 @@ const Contribute = () => {
                   
                   {magicMode && selectedQuestionId && (
                     <div className="mb-4">
-                      <Button 
-                        type="button" 
-                        onClick={handleGenerateAnswer}
-                        className="w-full mb-4 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600"
-                      >
-                        <Laugh className="mr-2 h-4 w-4" />
-                        <DualText textKey="generateMagicAnswer" />
-                      </Button>
+                      <AutomagicAnswer onGenerate={handleGenerateAnswer} />
                     </div>
                   )}
                   
