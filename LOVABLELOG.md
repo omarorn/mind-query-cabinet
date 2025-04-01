@@ -14,8 +14,16 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - ✅ Icelandic language support
 - ✅ Easter eggs and animations for fun interactions
 - ✅ Creatomate integration for content publishing
+- ✅ Text-to-speech functionality for answers and questions
 
 ## Recent Updates
+
+### 2023-10-25
+- Implemented text-to-speech functionality for both questions and answers
+- Created reusable SpeechButton component for consistent UI
+- Added speech pause during typewriter animations for better user experience
+- Fixed compatibility issues with QuestionContent and AttachmentBadge components
+- Updated documentation to reflect the text-to-speech implementation
 
 ### 2023-10-21
 - Enhanced AI question generation parsing to better handle different response formats
@@ -27,6 +35,7 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - Updated todo.md and created lovablelog.md
 
 ## Current Sprint
+- 🔄 Testing text-to-speech integration
 - 🔄 Testing AI question generation with different prompts
 - 🔄 Testing Creatomate integration
 - 🔄 Implementing additional UI animations
@@ -41,9 +50,12 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - Add image optimization for faster loading
 - Create a comprehensive admin dashboard
 - Implement a reporting system for inappropriate content
+- Add voice selection options for text-to-speech
+- Integrate with OpenAI's TTS API for higher quality voices
 
 ## Technical Notes
 - The application uses Gemini AI for generating questions and answers
+- Text-to-speech functionality uses the browser's built-in SpeechSynthesis API
 - State management is handled through React Context API
 - The UI is built with shadcn/ui components
 - Animations are implemented using Framer Motion
@@ -54,3 +66,5 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - Mobile responsiveness can be enhanced for better experience on small screens
 - QAContext is getting large and should be refactored into smaller pieces
 - Some AI responses may not parse correctly if they don't match expected format
+- Browser text-to-speech has limited language support for Icelandic
+- Need to improve voice quality with specialized text-to-speech APIs

@@ -42,12 +42,21 @@ const QuestionContent: React.FC<QuestionContentProps> = ({ question }) => {
           )}
           
           {question.attachment && (
-            <AttachmentBadge attachment={question.attachment} />
+            <AttachmentBadge 
+              type={question.attachment.type}
+              url={question.attachment.url}
+              name={question.attachment.name}
+            />
           )}
         </div>
         
         {question.imageUrl && (
-          <QuestionImage imageUrl={question.imageUrl} alt={question.title} className="mb-4" />
+          <QuestionImage 
+            src={question.imageUrl} 
+            alt={question.title} 
+            isEasterEgg={!!isEasterEgg}
+            isHovered={false}
+          />
         )}
         
         {question.article && (

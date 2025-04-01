@@ -40,5 +40,4 @@
 - [x] Create lovablelog.md to track development
 - [ ] Document the AI integration features for new developers
 - [ ] Create user manual for admin functions
-- [ ] Document text-to-speech functionality
-
+- [x] Document text-to-speech functionality
