@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, Laugh } from "lucide-react";
@@ -9,7 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import DualText from "./DualText";
 
 interface AIQuestionButtonProps {
-  onQuestionGenerated?: (title: string, content: string) => void;
+  onQuestionGenerated?: (title: string, content: string, source?: string, imageUrl?: string) => void;
   magicMode?: boolean;
 }
 
@@ -44,14 +43,14 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
         throw new Error("Failed to generate question");
       }
       
-      const { title, content } = result;
+      const { title, content, source, imageUrl } = result;
       
       // If callback provided, use it
       if (onQuestionGenerated) {
-        onQuestionGenerated(title, content);
+        onQuestionGenerated(title, content, source, imageUrl);
       } else {
         // Otherwise add directly
-        addQuestion(title, content);
+        addQuestion(title, content, undefined, null, source, imageUrl);
       }
       
       toast({

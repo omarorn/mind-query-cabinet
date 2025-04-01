@@ -1,93 +1,113 @@
 
+import React from "react";
 import { Link } from "react-router-dom";
-import { ThumbsUp, File, FileVideo, Link as LinkIcon } from "lucide-react";
-import { Question } from "@/types/qa";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ThumbsUp, FileText, Link as LinkIcon, Image } from "lucide-react";
+import { formatDistance } from "date-fns";
 import { useQA } from "@/context/QAContext";
-import { useLanguage } from "@/context/LanguageContext";
-import { cn } from "@/lib/utils";
-import DualText from "./DualText";
+import { Question } from "@/types/qa";
 
 interface QuestionCardProps {
   question: Question;
-  showContent?: boolean;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, showContent = true }) => {
-  const { voteQuestion, user, hasContributed, dailyVotesRemaining } = useQA();
-  const { t } = useLanguage();
-  
-  const formattedDate = new Date(question.createdAt).toLocaleDateString();
+const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
+  const { voteQuestion, dailyVotesRemaining } = useQA();
   
   const handleVote = () => {
-    if (!user) return;
-    voteQuestion(question.id, 'up');
+    voteQuestion(question.id, "up");
   };
   
-  const renderAttachmentIcon = () => {
-    if (!question.attachment) return null;
-    
-    switch (question.attachment.type) {
-      case 'file':
-        return <File className="h-4 w-4 text-blue-500" />;
-      case 'video':
-        return <FileVideo className="h-4 w-4 text-red-500" />;
-      case 'link':
-        return <LinkIcon className="h-4 w-4 text-green-500" />;
-    }
-  };
+  const hasVoted = !!question.userVote;
+  const formattedDate = formatDistance(new Date(question.createdAt), new Date(), { addSuffix: true });
   
   return (
-    <div className="qa-card">
-      <div className="flex items-start gap-4">
-        {hasContributed && (
-          <div className="flex flex-col items-center space-y-1">
-            <button
-              onClick={handleVote}
-              disabled={!user || (dailyVotesRemaining <= 0 && question.userVote !== 'up')}
-              className={cn(
-                "p-1 rounded hover:bg-gray-100 transition-colors", 
-                question.userVote === 'up' && "text-qa-primary",
-                dailyVotesRemaining <= 0 && question.userVote !== 'up' && "opacity-50 cursor-not-allowed"
-              )}
-              title={dailyVotesRemaining <= 0 && question.userVote !== 'up' ? t("noVotesRemaining").en : ""}
-            >
-              <ThumbsUp size={18} />
-            </button>
-            <span className="text-sm font-medium">
-              {question.upvotes}
-            </span>
+    <Card className="mb-4 hover:shadow-md transition-shadow duration-200">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg font-semibold">
+          <Link to={`/question/${question.id}`} className="text-qa-text hover:text-qa-primary">
+            {question.title}
+          </Link>
+        </CardTitle>
+      </CardHeader>
+      
+      <CardContent className="pb-2">
+        <p className="text-sm text-gray-600 mb-1">
+          {question.content.length > 200
+            ? `${question.content.substring(0, 200)}...`
+            : question.content}
+        </p>
+        
+        {question.imageUrl && (
+          <div className="my-2">
+            <img 
+              src={question.imageUrl} 
+              alt={question.title} 
+              className="rounded-md max-h-40 w-auto object-cover"
+            />
           </div>
         )}
         
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-xl font-semibold">
-              <Link to={`/question/${question.id}`} className="hover:text-qa-primary">
-                {question.title}
-              </Link>
-            </h3>
-            {renderAttachmentIcon()}
-            {question.article && <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded">Article</span>}
-          </div>
-          {showContent && <p className="text-gray-600 line-clamp-2 mb-3">{question.content}</p>}
-          <div className="flex justify-between items-center text-sm text-gray-500">
-            <div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  {t("askedBy").en} <span className="font-medium">{question.authorName}</span> {t("on").en} {formattedDate}
-                </div>
-                <div>
-                  {t("askedBy").is} <span className="font-medium">{question.authorName}</span> {t("on").is} {formattedDate}
-                </div>
-              </div>
+        <div className="flex flex-wrap mt-3 gap-2">
+          {question.article && (
+            <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700">
+              <FileText className="w-3 h-3 mr-1" />
+              Article Facts
             </div>
-            <Link to={`/question/${question.id}`} className="text-qa-primary hover:underline">
-              <DualText textKey="viewDetails" />
-            </Link>
-          </div>
+          )}
+          
+          {question.source && (
+            <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
+              <LinkIcon className="w-3 h-3 mr-1" />
+              <a 
+                href={question.source.startsWith('http') ? question.source : `https://${question.source}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                Source
+              </a>
+            </div>
+          )}
+          
+          {question.imageUrl && (
+            <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-700">
+              <Image className="w-3 h-3 mr-1" />
+              Has Image
+            </div>
+          )}
+          
+          {question.attachment && (
+            <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-700">
+              {question.attachment.type === 'file' && <FileText className="w-3 h-3 mr-1" />}
+              {question.attachment.type === 'video' && <FileText className="w-3 h-3 mr-1" />}
+              {question.attachment.type === 'link' && <LinkIcon className="w-3 h-3 mr-1" />}
+              {question.attachment.name || question.attachment.type}
+            </div>
+          )}
         </div>
-      </div>
-    </div>
+      </CardContent>
+      
+      <CardFooter className="pt-0 flex justify-between items-center">
+        <div className="text-xs text-gray-500">
+          <span>{question.authorName}</span>
+          <span className="mx-2">•</span>
+          <span>{formattedDate}</span>
+        </div>
+        
+        <Button 
+          variant={hasVoted ? "default" : "outline"} 
+          size="sm" 
+          className="text-xs"
+          onClick={handleVote}
+          disabled={dailyVotesRemaining <= 0 && !hasVoted}
+        >
+          <ThumbsUp className="w-3 h-3 mr-1" /> 
+          {question.upvotes}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 

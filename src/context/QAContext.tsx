@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Question, Answer, User } from '@/types/qa';
@@ -10,7 +11,9 @@ interface QAContextType {
   answers: Answer[];
   hasContributed: boolean;
   dailyVotesRemaining: number;
-  createUser: (name: string, isAdmin?: boolean) => void;
+  createUser: (name: string, email?: string, isAdmin?: boolean) => void;
+  login: (email: string) => void;
+  logout: () => void;
   addQuestion: (
     title: string, 
     content: string, 
@@ -19,7 +22,9 @@ interface QAContextType {
       type: 'file' | 'video' | 'link';
       url: string;
       name?: string;
-    } | null
+    } | null,
+    source?: string,
+    imageUrl?: string
   ) => void;
   addAnswer: (questionId: string, content: string) => void;
   voteQuestion: (questionId: string, voteType: 'up') => void;
@@ -77,16 +82,56 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     localStorage.setItem('qa-daily-votes', JSON.stringify(dailyVotes));
   }, [user, questions, answers, hasContributed, dailyVotes]);
 
-  const createUser = (name: string, isAdmin: boolean = false) => {
+  const createUser = (name: string, email: string = "", isAdmin: boolean = false) => {
+    // Check if email ends with @omaromar.net to automatically make them admin
+    const isOmarOmarEmail = email.toLowerCase().endsWith('@omaromar.net');
+    
     const newUser = {
       id: uuidv4(),
       name,
-      isAdmin
+      email,
+      isAdmin: isAdmin || isOmarOmarEmail
     };
+    
     setUser(newUser);
     toast({
       title: "Welcome!",
-      description: `Hello ${name}, you can now start contributing!`,
+      description: `Hello ${name}, you can now start contributing!${isOmarOmarEmail ? ' You have been granted admin privileges.' : ''}`,
+    });
+  };
+
+  const login = (email: string) => {
+    // If user exists, just update their status
+    if (user) {
+      const isOmarOmarEmail = email.toLowerCase().endsWith('@omaromar.net');
+      const updatedUser = {
+        ...user,
+        email,
+        isAdmin: user.isAdmin || isOmarOmarEmail
+      };
+      
+      setUser(updatedUser);
+      
+      if (isOmarOmarEmail && !user.isAdmin) {
+        toast({
+          title: "Admin Access Granted",
+          description: "You have been granted administrator privileges.",
+        });
+      } else {
+        toast({
+          title: "Login Successful",
+          description: "You have been logged in successfully.",
+        });
+      }
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('qa-user');
+    setUser(null);
+    toast({
+      title: "Logged Out",
+      description: "You have been logged out successfully.",
     });
   };
 
@@ -98,7 +143,9 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       type: 'file' | 'video' | 'link';
       url: string;
       name?: string;
-    } | null
+    } | null,
+    source?: string,
+    imageUrl?: string
   ) => {
     if (!user) return;
     
@@ -111,7 +158,9 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       authorName: user.name,
       upvotes: 0,
       article: article,
-      attachment: attachment || undefined
+      attachment: attachment || undefined,
+      source,
+      imageUrl
     };
     
     setQuestions([...questions, newQuestion]);
@@ -363,7 +412,9 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       answers, 
       hasContributed,
       dailyVotesRemaining,
-      createUser, 
+      createUser,
+      login, 
+      logout, 
       addQuestion, 
       addAnswer, 
       voteQuestion, 

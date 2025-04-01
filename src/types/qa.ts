@@ -3,6 +3,7 @@ export interface User {
   id: string;
   name: string;
   isAdmin?: boolean;
+  email?: string;
 }
 
 export interface Question {
@@ -22,6 +23,8 @@ export interface Question {
   };
   article?: string;
   posted?: boolean;
+  source?: string;
+  imageUrl?: string;
 }
 
 export interface Answer {

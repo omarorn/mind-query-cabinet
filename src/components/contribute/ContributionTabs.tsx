@@ -27,6 +27,10 @@ interface ContributionTabsProps {
   onGenerateAnswer: () => void;
   onQuestionSubmit: (e: React.FormEvent) => void;
   onAnswerSubmit: (e: React.FormEvent) => void;
+  questionSource?: string;
+  questionImageUrl?: string;
+  onQuestionSourceChange?: (value: string) => void;
+  onQuestionImageUrlChange?: (value: string) => void;
 }
 
 const ContributionTabs: React.FC<ContributionTabsProps> = ({
@@ -47,7 +51,11 @@ const ContributionTabs: React.FC<ContributionTabsProps> = ({
   onAttachmentChange,
   onGenerateAnswer,
   onQuestionSubmit,
-  onAnswerSubmit
+  onAnswerSubmit,
+  questionSource = "",
+  questionImageUrl = "",
+  onQuestionSourceChange = () => {},
+  onQuestionImageUrlChange = () => {}
 }) => {
   return (
     <div className="qa-card">
@@ -79,9 +87,13 @@ const ContributionTabs: React.FC<ContributionTabsProps> = ({
           questionTitle={questionTitle}
           questionContent={questionContent}
           questionArticle={questionArticle}
+          questionSource={questionSource}
+          questionImageUrl={questionImageUrl}
           onQuestionTitleChange={onQuestionTitleChange}
           onQuestionContentChange={onQuestionContentChange}
           onQuestionArticleChange={onQuestionArticleChange}
+          onQuestionSourceChange={onQuestionSourceChange}
+          onQuestionImageUrlChange={onQuestionImageUrlChange}
           onAttachmentChange={onAttachmentChange}
           onSubmit={onQuestionSubmit}
         />

@@ -7,11 +7,12 @@ import DualText from '@/components/DualText';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface UserCreationFormProps {
-  createUser: (name: string) => void;
+  createUser: (name: string, email?: string) => void;
 }
 
 const UserCreationForm: React.FC<UserCreationFormProps> = ({ createUser }) => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const { toast } = useToast();
   const { t } = useLanguage();
   
@@ -25,7 +26,17 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ createUser }) => {
       });
       return;
     }
-    createUser(name.trim());
+    
+    if (email && !email.includes('@')) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    createUser(name.trim(), email.trim());
   };
   
   return (
@@ -45,6 +56,21 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ createUser }) => {
             placeholder={t("enterYourName").en}
             required
           />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <DualText textKey="yourEmail" />
+          </label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("enterYourEmail").en || "Enter your email"}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            <DualText textKey="emailHelp" />
+          </p>
         </div>
         <Button type="submit" className="w-full">
           <DualText textKey="createAccount" />

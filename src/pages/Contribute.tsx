@@ -10,6 +10,7 @@ import UserCreationForm from "@/components/contribute/UserCreationForm";
 import ContributionStats from "@/components/contribute/ContributionStats";
 import ContributionTabs from "@/components/contribute/ContributionTabs";
 import APIKeyInput from "@/components/APIKeyInput";
+import LoginForm from "@/components/LoginForm";
 import { generateAnswerWithAI } from "@/utils/aiUtils";
 import { hasGeminiKey } from "@/utils/keyUtils";
 
@@ -39,6 +40,8 @@ const Contribute = () => {
     url: string;
     name?: string;
   } | null>(null);
+  const [questionSource, setQuestionSource] = useState("");
+  const [questionImageUrl, setQuestionImageUrl] = useState("");
   const [magicMode, setMagicMode] = useState(false);
   
   const handleAddQuestion = (e: React.FormEvent) => {
@@ -56,13 +59,17 @@ const Contribute = () => {
       questionTitle.trim(), 
       questionContent.trim(), 
       questionArticle.trim() || undefined,
-      questionAttachment
+      questionAttachment,
+      questionSource.trim() || undefined,
+      questionImageUrl.trim() || undefined
     );
     
     setQuestionTitle("");
     setQuestionContent("");
     setQuestionArticle("");
     setQuestionAttachment(null);
+    setQuestionSource("");
+    setQuestionImageUrl("");
     
     if (userQuestionCount + userAnswerCount + 1 >= 3) {
       navigate("/browse");
@@ -89,9 +96,11 @@ const Contribute = () => {
     }
   };
 
-  const handleAIQuestionGenerated = (title: string, content: string) => {
+  const handleAIQuestionGenerated = (title: string, content: string, source?: string, imageUrl?: string) => {
     setQuestionTitle(title);
     setQuestionContent(content);
+    setQuestionSource(source || "");
+    setQuestionImageUrl(imageUrl || "");
     setActiveTab("question");
   };
 
@@ -133,12 +142,15 @@ const Contribute = () => {
   return (
     <Layout>
       <div className="max-w-3xl mx-auto relative">
-        <h1 className="text-3xl font-bold mb-6 text-qa-text">
-          <div className="grid grid-cols-2 gap-2 block">
-            <div className="text-left">{t("contributeTitle").en}</div>
-            <div className="text-left">{t("contributeTitle").is}</div>
-          </div>
-        </h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-qa-text">
+            <div className="grid grid-cols-2 gap-2 block">
+              <div className="text-left">{t("contributeTitle").en}</div>
+              <div className="text-left">{t("contributeTitle").is}</div>
+            </div>
+          </h1>
+          <LoginForm />
+        </div>
         
         {!hasGeminiKey() && (
           <APIKeyInput />

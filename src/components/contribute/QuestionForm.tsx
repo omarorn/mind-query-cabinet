@@ -20,6 +20,10 @@ interface QuestionFormProps {
     name?: string;
   } | null) => void;
   onSubmit: (e: React.FormEvent) => void;
+  questionSource?: string;
+  questionImageUrl?: string;
+  onQuestionSourceChange?: (value: string) => void;
+  onQuestionImageUrlChange?: (value: string) => void;
 }
 
 const QuestionForm: React.FC<QuestionFormProps> = ({
@@ -30,7 +34,11 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   onQuestionContentChange,
   onQuestionArticleChange,
   onAttachmentChange,
-  onSubmit
+  onSubmit,
+  questionSource = "",
+  questionImageUrl = "",
+  onQuestionSourceChange = () => {},
+  onQuestionImageUrlChange = () => {}
 }) => {
   const { t } = useLanguage();
 
@@ -76,6 +84,36 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         />
         <p className="text-xs text-gray-500 mt-1">
           <DualText textKey="articleFactsHelp" />
+        </p>
+      </div>
+      
+      <div className="mb-4">
+        <label htmlFor="questionSource" className="block text-sm font-medium text-gray-700 mb-1">
+          <DualText textKey="sourceLink" />
+        </label>
+        <Input
+          id="questionSource"
+          value={questionSource}
+          onChange={(e) => onQuestionSourceChange(e.target.value)}
+          placeholder="https://example.com"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          <DualText textKey="sourceLinkHelp" />
+        </p>
+      </div>
+      
+      <div className="mb-4">
+        <label htmlFor="questionImageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+          <DualText textKey="imageUrl" />
+        </label>
+        <Input
+          id="questionImageUrl"
+          value={questionImageUrl}
+          onChange={(e) => onQuestionImageUrlChange(e.target.value)}
+          placeholder="https://example.com/image.jpg"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          <DualText textKey="imageUrlHelp" />
         </p>
       </div>
       

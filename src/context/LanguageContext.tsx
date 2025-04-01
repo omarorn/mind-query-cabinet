@@ -1,19 +1,21 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-type Translation = {
+type DualTextValue = {
   en: string;
   is: string;
 };
 
-type Translations = {
-  [key: string]: Translation;
-};
-
-interface LanguageContextType {
-  t: (key: string) => Translation;
+interface TextDictionary {
+  [key: string]: DualTextValue;
 }
 
-const translations: Translations = {
+interface LanguageContextType {
+  language: 'en' | 'is';
+  setLanguage: (lang: 'en' | 'is') => void;
+  t: (key: string) => DualTextValue;
+}
+
+const dictionary: TextDictionary = {
   // Existing translations
   welcome: { en: 'Welcome', is: 'Velkomin' },
   tagline: { 
@@ -177,18 +179,60 @@ const translations: Translations = {
   saveKey: {
     en: "Save Key",
     is: "Vista lykil"
+  },
+  
+  // New entries for login
+  login: {
+    en: "Login",
+    is: "Skrá inn"
+  },
+  logout: {
+    en: "Logout",
+    is: "Skrá út"
+  },
+  yourEmail: {
+    en: "Your Email",
+    is: "Tölvupósturinn þinn"
+  },
+  enterEmail: {
+    en: "Enter your email",
+    is: "Sláðu inn tölvupóstinn þinn"
+  },
+  emailHelp: {
+    en: "Users with @omaromar.net email will receive admin privileges",
+    is: "Notendur með @omaromar.net tölvupóst fá stjórnendaréttindi"
+  },
+  
+  // New entries for source and image
+  sourceLink: {
+    en: "Source Link",
+    is: "Heimild tengill"
+  },
+  sourceLinkHelp: {
+    en: "Add a link to the source of your question",
+    is: "Bættu við tengli á heimild spurningarinnar þinnar"
+  },
+  imageUrl: {
+    en: "Image URL",
+    is: "Slóð myndar"
+  },
+  imageUrlHelp: {
+    en: "Add an image to illustrate your question",
+    is: "Bættu við mynd til að sýna spurninguna þína"
   }
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const t = (key: string): Translation => {
-    return translations[key] || { en: key, is: key };
+  const [language, setLanguage] = useState<'en' | 'is'>('en');
+
+  const t = (key: string): DualTextValue => {
+    return dictionary[key] || { en: key, is: key };
   };
 
   return (
-    <LanguageContext.Provider value={{ t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
