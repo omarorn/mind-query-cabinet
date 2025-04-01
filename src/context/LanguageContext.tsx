@@ -160,6 +160,24 @@ const translations: Translations = {
     en: 'Generating...', 
     is: 'Bý til...' 
   },
+  
+  // New keys for API functionality
+  apiKeySet: {
+    en: "Gemini API key is set and ready to use",
+    is: "Gemini API lykillinn er stilltur og tilbúinn til notkunar"
+  },
+  removeKey: {
+    en: "Remove Key",
+    is: "Fjarlægja lykil"
+  },
+  needGeminiKey: {
+    en: "Please enter your Gemini API key to enable AI question generation",
+    is: "Vinsamlegast sláðu inn Gemini API lykilinn þinn til að virkja AI spurningagerð"
+  },
+  saveKey: {
+    en: "Save Key",
+    is: "Vista lykil"
+  }
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

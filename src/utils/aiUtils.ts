@@ -9,14 +9,16 @@ interface GeminiResponse {
   }>;
 }
 
+import { getGeminiKey } from "./keyUtils";
+
 export const generateQuestionWithAI = async (prompt: string = "Generate an interesting question for a Q&A platform"): Promise<{ title: string; content: string } | null> => {
   try {
-    // Check if the API key is available
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    // Get the API key from storage
+    const apiKey = getGeminiKey();
     
     if (!apiKey) {
       console.error('Gemini API key is missing');
-      throw new Error('API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.');
+      throw new Error('API key is missing. Please add your Gemini API key in the settings.');
     }
     
     const response = await fetch(
@@ -67,12 +69,12 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
 
 export const generateAnswerWithAI = async (questionTitle: string, questionContent: string): Promise<string | null> => {
   try {
-    // Check if the API key is available
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    // Get the API key from storage
+    const apiKey = getGeminiKey();
     
     if (!apiKey) {
       console.error('Gemini API key is missing');
-      throw new Error('API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.');
+      throw new Error('API key is missing. Please add your Gemini API key in the settings.');
     }
     
     const prompt = `Generate a witty, insightful answer to this question. Be creative but informative.

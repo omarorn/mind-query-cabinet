@@ -9,7 +9,9 @@ import MagicButton from "@/components/MagicButton";
 import UserCreationForm from "@/components/contribute/UserCreationForm";
 import ContributionStats from "@/components/contribute/ContributionStats";
 import ContributionTabs from "@/components/contribute/ContributionTabs";
+import APIKeyInput from "@/components/APIKeyInput";
 import { generateAnswerWithAI } from "@/utils/aiUtils";
+import { hasGeminiKey } from "@/utils/keyUtils";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -137,6 +139,10 @@ const Contribute = () => {
             <div className="text-left">{t("contributeTitle").is}</div>
           </div>
         </h1>
+        
+        {!hasGeminiKey() && (
+          <APIKeyInput />
+        )}
         
         {!user ? (
           <UserCreationForm createUser={createUser} />
