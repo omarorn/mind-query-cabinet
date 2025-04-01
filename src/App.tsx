@@ -14,7 +14,15 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import "./easterEggs.css";
 
-const queryClient = new QueryClient();
+// Create a new QueryClient instance with custom settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // Don't refetch when window gains focus
+      staleTime: 1000 * 60 * 5, // Data is fresh for 5 minutes
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -23,16 +31,18 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/browse" element={<Browse />} />
-              <Route path="/question/:id" element={<QuestionDetail />} />
-              <Route path="/contribute" element={<Contribute />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <div className="font-crayon min-h-screen bg-gradient-to-b from-blue-50 to-purple-50">
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/browse" element={<Browse />} />
+                <Route path="/question/:id" element={<QuestionDetail />} />
+                <Route path="/contribute" element={<Contribute />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </div>
         </TooltipProvider>
       </QAProvider>
     </LanguageProvider>

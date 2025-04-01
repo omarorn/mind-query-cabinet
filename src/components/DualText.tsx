@@ -13,13 +13,13 @@ const DualText: React.FC<DualTextProps> = ({ textKey, fallback, className = '' }
   const translations = t(textKey);
   
   // If translations don't exist and a fallback is provided, create a temporary translation
-  const { en, is } = translations.en === textKey && fallback ? 
+  const { is } = translations.en === textKey && fallback ? 
     { en: fallback, is: fallback } : 
     translations;
 
+  // Only show Icelandic text now
   return (
-    <span className={`grid grid-cols-2 gap-2 ${className}`}>
-      <span className="text-left">{en}</span>
+    <span className={className}>
       <span className="text-left">{is}</span>
     </span>
   );

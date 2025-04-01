@@ -80,3 +80,124 @@
   animation: firework 0.8s ease-out;
   animation-fill-mode: forwards;
 }
+
+/* Crayon-style animations */
+
+/* Rainbow trail for cursor */
+.rainbow-cursor {
+  cursor: none;
+}
+
+.rainbow-cursor::after {
+  content: "";
+  display: block;
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #ff4d4d, #ffb83d, #fff83d, #5bff3d, #3dffcf, #3d76ff);
+  background-size: 200% auto;
+  animation: rainbow-bg 2s linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes rainbow-bg {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* Crayon drawing effect */
+.crayon-drawing::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L100,100 M100,0 L0,100' stroke='%238B5CF6' stroke-width='1' stroke-opacity='0.1'/%3E%3C/svg%3E");
+  background-size: 10px 10px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Wiggle animation for fun elements */
+.wiggle-on-hover:hover {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  25%, 75% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* Crayon color doodle borders */
+.crayon-border {
+  border-style: solid;
+  border-width: 6px;
+  border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0,0 L 100,0 L 100,100 L 0,100 Z' fill='none' stroke='%238B5CF6' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='5,10' /%3E%3C/svg%3E") 1;
+}
+
+/* Floating animation for cards */
+.card-float:hover {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Add surprise confetti */
+.confetti-trigger:active + .confetti-container {
+  display: block;
+}
+
+.confetti-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #f00;
+  opacity: 0;
+}
+
+.confetti.square {
+  border-radius: 0;
+}
+
+.confetti.triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.confetti.circle {
+  border-radius: 50%;
+}
+
+.confetti-animation {
+  animation: confetti-fall 3s ease-in-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 100px)) rotate(720deg);
+    opacity: 0;
+  }
+}

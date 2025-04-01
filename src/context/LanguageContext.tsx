@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from 'react';
 
 type DualTextValue = {
@@ -19,32 +20,32 @@ const dictionary: TextDictionary = {
   // Existing translations
   welcome: { en: 'Welcome', is: 'Velkomin' },
   tagline: { 
-    en: 'Ask questions, get answers, share knowledge', 
+    en: 'Ask questions, find answers, share knowledge', 
     is: 'Spyrðu spurninga, fáðu svör, deildu þekkingu' 
   },
-  getStarted: { en: 'Get Started', is: 'Komast af stað' },
+  getStarted: { en: 'Let\'s Go!', is: 'Byrjum!' },
   browseQuestions: { en: 'Browse Questions', is: 'Skoða spurningar' },
   recentQuestions: { en: 'Recent Questions', is: 'Nýlegar spurningar' },
   viewAll: { en: 'View All', is: 'Sjá allt' },
   howItWorks: { en: 'How It Works', is: 'Hvernig virkar það' },
-  step1Title: { en: 'Create an Account', is: 'Búðu til reikning' },
+  step1Title: { en: 'Create an Account', is: 'Búðu til aðgang' },
   step1Desc: { 
-    en: 'Provide your name to start contributing to the community', 
-    is: 'Gefðu upp nafnið þitt til að byrja að leggja til samfélaginu' 
+    en: 'Tell us your name to join our community', 
+    is: 'Segðu okkur hvað þú heitir til að vera með' 
   },
-  step2Title: { en: 'Contribute Content', is: 'Leggðu til efni' },
+  step2Title: { en: 'Share Your Ideas', is: 'Deildu hugmyndum þínum' },
   step2Desc: { 
-    en: 'Ask questions or answer existing ones to gain full access', 
-    is: 'Spurðu spurninga eða svaraðu fyrirliggjandi til að fá fullan aðgang' 
+    en: 'Ask questions or answer others to join the fun', 
+    is: 'Spyrðu spurninga eða svaraðu öðrum til að vera með í gleðinni' 
   },
-  step3Title: { en: 'Unlock Full Access', is: 'Opnað fyrir fullan aðgang' },
+  step3Title: { en: 'Discover Everything', is: 'Uppgötvaðu allt' },
   step3Desc: { 
-    en: 'After 3 contributions, enjoy unlimited access to all content', 
-    is: 'Eftir 3 framlög, njóttu ótakmarkaðs aðgang að öllu efni' 
+    en: 'After 3 contributions, enjoy all our content', 
+    is: 'Eftir 3 framlög, njóttu alls efnisins okkar' 
   },
   home: { en: 'Home', is: 'Heim' },
-  browse: { en: 'Browse', is: 'Vafra' },
-  contribute: { en: 'Contribute', is: 'Leggja til' },
+  browse: { en: 'Browse', is: 'Skoða' },
+  contribute: { en: 'Contribute', is: 'Taka þátt' },
   searchPlaceholder: { en: 'Search questions...', is: 'Leita að spurningum...' },
   loading: { en: 'Loading...', is: 'Hleður...' },
   questions: { en: 'Questions', is: 'Spurningar' },
@@ -58,40 +59,40 @@ const dictionary: TextDictionary = {
   on: { en: 'on', is: 'þann' },
   answeredBy: { en: 'Answered by', is: 'Svarað af' },
   
-  // New translations
+  // Updated to be more family-friendly
   contributeTitle: { 
-    en: 'Contribute to Q&A Exchange', 
-    is: 'Leggja til Q&A-vettvangs' 
+    en: 'Join Our Q&A Adventure!', 
+    is: 'Vertu með í ævintýrinu okkar!' 
   },
   yourName: { en: 'Your Name', is: 'Nafnið þitt' },
   enterYourName: { en: 'Enter your name', is: 'Sláðu inn nafnið þitt' },
-  createAccount: { en: 'Create Account', is: 'Búa til reikning' },
-  yourContributions: { en: 'Your Contributions', is: 'Framlög þín' },
+  createAccount: { en: 'Join In', is: 'Skrá sig' },
+  yourContributions: { en: 'Your Adventures', is: 'Ævintýrin þín' },
   required: { en: 'Required', is: 'Nauðsynlegt' },
   yes: { en: 'Yes', is: 'Já' },
   notYet: { en: 'Not Yet', is: 'Ekki enn' },
   fullAccess: { en: 'Full Access', is: 'Fullur aðgangur' },
-  congratulations: { en: 'Congratulations!', is: 'Til hamingju!' },
+  congratulations: { en: 'Hooray!', is: 'Húrra!' },
   contributionComplete: { 
-    en: "You've contributed enough to gain full access to all Q&A content.", 
-    is: 'Þú hefur lagt nóg til að fá fullan aðgang að öllu Q&A efni.' 
+    en: "You've unlocked all our fun content!", 
+    is: 'Þú hefur opnað aðgang að öllu skemmtilega efninu okkar!' 
   },
   askQuestion: { en: 'Ask a Question', is: 'Spyrja spurningu' },
   answerQuestion: { en: 'Answer a Question', is: 'Svara spurningu' },
   questionTitle: { en: 'Question Title', is: 'Titill spurningar' },
   questionTitlePlaceholder: { 
-    en: 'e.g. How do I improve my programming skills?', 
-    is: 't.d. Hvernig get ég bætt forritunarhæfni mína?' 
+    en: 'e.g. Why is the sky blue?', 
+    is: 't.d. Af hverju er himininn blár?' 
   },
   questionDetails: { en: 'Question Details', is: 'Upplýsingar um spurningu' },
   questionDetailsPlaceholder: { 
-    en: 'Provide more details about your question...', 
-    is: 'Gefðu meiri upplýsingar um spurninguna þína...' 
+    en: 'Tell us more about your question...', 
+    is: 'Segðu okkur meira um spurninguna þína...' 
   },
   submitQuestion: { en: 'Submit Question', is: 'Senda spurningu' },
-  selectQuestion: { en: 'Select a Question', is: 'Veldu spurningu' },
+  selectQuestion: { en: 'Pick a Question', is: 'Veldu spurningu' },
   selectQuestionPlaceholder: { 
-    en: 'Select a question to answer', 
+    en: 'Choose a question to answer', 
     is: 'Veldu spurningu til að svara' 
   },
   yourAnswer: { en: 'Your Answer', is: 'Svarið þitt' },
@@ -102,22 +103,22 @@ const dictionary: TextDictionary = {
   submitAnswer: { en: 'Submit Answer', is: 'Senda svar' },
   questionNotFound: { en: 'Question Not Found', is: 'Spurning fannst ekki' },
   questionNotFoundDesc: { 
-    en: "The question you're looking for doesn't exist or has been removed.", 
-    is: 'Spurningin sem þú ert að leita að er ekki til eða hefur verið fjarlægð.' 
+    en: "We couldn't find that question!", 
+    is: 'Við fundum ekki þessa spurningu!' 
   },
   backToQuestions: { en: 'Back to Questions', is: 'Til baka í spurningar' },
   answer: { en: 'Answer', is: 'Svar' },
   noAnswersYet: { 
-    en: 'No answers yet. Be the first to answer!', 
-    is: 'Engin svör enn. Vertu fyrst/ur til að svara!' 
+    en: 'No answers yet. Be the first!', 
+    is: 'Engin svör enn. Vertu fyrst/ur!' 
   },
   mustBeLoggedIn: { 
-    en: 'You must be logged in to answer questions', 
-    is: 'Þú verður að vera skráð/ur inn til að svara spurningum' 
+    en: 'Please log in to answer', 
+    is: 'Skráðu þig inn til að svara' 
   },
   enterAnswer: { en: 'Please enter an answer', is: 'Vinsamlegast sláðu inn svar' },
   
-  // New attachment and article translations
+  // Attachment and article translations updated
   attachmentType: { en: 'Attachment Type', is: 'Tegund viðhengis' },
   file: { en: 'File', is: 'Skrá' },
   video: { en: 'Video', is: 'Myndband' },
@@ -125,63 +126,63 @@ const dictionary: TextDictionary = {
   linkUrl: { en: 'Link URL', is: 'Slóð hlekkjar' },
   attachmentUrl: { en: 'Attachment URL', is: 'Slóð viðhengis' },
   attachmentName: { en: 'Attachment Name', is: 'Nafn viðhengis' },
-  optionalName: { en: 'Optional name or description', is: 'Valfrjálst nafn eða lýsing' },
+  optionalName: { en: 'Name or description', is: 'Nafn eða lýsing' },
   addAttachment: { en: 'Add Attachment', is: 'Bæta við viðhengi' },
   clear: { en: 'Clear', is: 'Hreinsa' },
-  articleFacts: { en: 'Article / Facts', is: 'Grein / Staðreyndir' },
+  articleFacts: { en: 'Fun Facts', is: 'Skemmtilegar staðreyndir' },
   articleFactsPlaceholder: { 
-    en: 'Add supporting facts or article text here...', 
-    is: 'Bættu við stuðningsstaðreyndum eða greinarefni hér...' 
+    en: 'Add fun facts here...', 
+    is: 'Bættu við skemmtilegum staðreyndum hér...' 
   },
   articleFactsHelp: { 
-    en: 'Optional. Add supporting information or verifiable facts related to your question.', 
-    is: 'Valfrjálst. Bættu við stuðningsupplýsingum eða staðfestanlegum staðreyndum tengdum spurningunni þinni.' 
+    en: 'Add fun information related to your question', 
+    is: 'Bættu við skemmtilegum upplýsingum tengdum spurningunni þinni' 
   },
   attachments: { en: 'Attachments', is: 'Viðhengi' },
   fileAttachment: { en: 'File Attachment', is: 'Skráarviðhengi' },
   videoAttachment: { en: 'Video Attachment', is: 'Myndbandviðhengi' },
   linkAttachment: { en: 'Link Attachment', is: 'Hlekksviðhengi' },
   
-  // New translations for voting limits
+  // More kid-friendly wording
   voteLimit: { en: 'Daily Vote Limit Reached', is: 'Daglegu atkvæðamarki náð' },
   voteLimitDesc: { 
-    en: 'You have used all 5 of your daily upvotes. Try again tomorrow.', 
-    is: 'Þú hefur notað öll 5 daglegu uppatkvæði þín. Reyndu aftur á morgun.' 
+    en: 'You have used all 5 of your daily stars', 
+    is: 'Þú hefur notað allar 5 daglegu stjörnurnar þínar' 
   },
   noVotesRemaining: { 
-    en: 'No more upvotes remaining today', 
-    is: 'Engin fleiri uppatkvæði eftir í dag' 
+    en: 'No more stars today', 
+    is: 'Engar fleiri stjörnur í dag' 
   },
   
-  // New translations for AI Question generation
+  // AI Question generation
   generateAIQuestion: { 
-    en: 'Generate AI Question', 
-    is: 'Búa til gervigreindspurningu' 
+    en: 'Magic Question Maker', 
+    is: 'Töfra-spurningavél' 
   },
   generating: { 
-    en: 'Generating...', 
-    is: 'Bý til...' 
+    en: 'Creating Magic...', 
+    is: 'Býr til töfra...' 
   },
   
-  // New keys for API functionality
+  // API functionality
   apiKeySet: {
-    en: "Gemini API key is set and ready to use",
-    is: "Gemini API lykillinn er stilltur og tilbúinn til notkunar"
+    en: "Magic key is ready",
+    is: "Töfralykillinn er tilbúinn"
   },
   removeKey: {
     en: "Remove Key",
     is: "Fjarlægja lykil"
   },
   needGeminiKey: {
-    en: "Please enter your Gemini API key to enable AI question generation",
-    is: "Vinsamlegast sláðu inn Gemini API lykilinn þinn til að virkja AI spurningagerð"
+    en: "Please enter your magic key",
+    is: "Vinsamlegast sláðu inn töfralykil"
   },
   saveKey: {
     en: "Save Key",
     is: "Vista lykil"
   },
   
-  // New entries for login
+  // Login
   login: {
     en: "Login",
     is: "Skrá inn"
@@ -199,33 +200,96 @@ const dictionary: TextDictionary = {
     is: "Sláðu inn tölvupóstinn þinn"
   },
   emailHelp: {
-    en: "Users with @omaromar.net email will receive admin privileges",
-    is: "Notendur með @omaromar.net tölvupóst fá stjórnendaréttindi"
+    en: "Helper elves get special powers",
+    is: "Hjálparálfar fá sérstaka krafta"
   },
   
-  // New entries for source and image
+  // Source and image
   sourceLink: {
     en: "Source Link",
     is: "Heimild tengill"
   },
   sourceLinkHelp: {
-    en: "Add a link to the source of your question",
-    is: "Bættu við tengli á heimild spurningarinnar þinnar"
+    en: "Where did you learn this?",
+    is: "Hvar lærðirðu þetta?"
   },
   imageUrl: {
     en: "Image URL",
     is: "Slóð myndar"
   },
   imageUrlHelp: {
-    en: "Add an image to illustrate your question",
-    is: "Bættu við mynd til að sýna spurninguna þína"
-  }
+    en: "Add a fun picture",
+    is: "Bættu við skemmtilegri mynd"
+  },
+  
+  // Add new family-friendly categories
+  categories: {
+    en: "Categories",
+    is: "Flokkar"
+  },
+  categoryAnimals: {
+    en: "Animals",
+    is: "Dýr"
+  },
+  categorySpace: {
+    en: "Space",
+    is: "Geimurinn"
+  },
+  categoryNature: {
+    en: "Nature",
+    is: "Náttúran"
+  },
+  categoryScience: {
+    en: "Science",
+    is: "Vísindi"
+  },
+  categoryHistory: {
+    en: "History",
+    is: "Saga"
+  },
+  categoryArt: {
+    en: "Art & Crafts",
+    is: "List og handverk"
+  },
+  categoryMusic: {
+    en: "Music",
+    is: "Tónlist"
+  },
+  categoryFood: {
+    en: "Food",
+    is: "Matur"
+  },
+  categoryBooks: {
+    en: "Books",
+    is: "Bækur"
+  },
+  categoryGames: {
+    en: "Games",
+    is: "Leikir"
+  },
+  categoryPuzzles: {
+    en: "Puzzles",
+    is: "Þrautir"
+  },
+  categoryFunnyFacts: {
+    en: "Funny Facts",
+    is: "Fyndnar staðreyndir"
+  },
+  categoryMagic: {
+    en: "Magic",
+    is: "Töfrar"
+  },
+  categoryRainbow: {
+    en: "Rainbow",
+    is: "Regnbogi"
+  },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<'en' | 'is'>('en');
+  // Default to Icelandic now
+  const [language, setLanguage] = useState<'en' | 'is'>('is');
 
   const t = (key: string): DualTextValue => {
     return dictionary[key] || { en: key, is: key };

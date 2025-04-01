@@ -3,6 +3,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -11,24 +13,24 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 270 76% 53%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
+    --secondary: 143 72% 46%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
+    --accent: 49 91% 63%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
-    --qa-primary: #3b82f6;
-    --qa-secondary: #ef4444;
-    --qa-text: #1f2937;
-    --qa-background: #f9fafb;
+    --ring: 270 76% 53%;
+    --radius: 1rem;
+    --qa-primary: #8B5CF6;
+    --qa-secondary: #10B981;
+    --qa-text: #4B5563;
+    --qa-background: #F9FAFB;
   }
 
   .dark {
@@ -52,33 +54,125 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
   }
+
+  body {
+    font-family: 'Comic Neue', sans-serif;
+  }
 }
 
 @layer components {
   .qa-card {
-    @apply p-6 bg-white rounded-lg shadow-sm border border-gray-100 mb-4;
+    @apply p-6 bg-white rounded-xl shadow-sm border-2 border-purple-200 mb-4;
   }
 
   .qa-button {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-qa-primary text-white hover:bg-blue-600 h-10 px-4 py-2;
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-qa-primary text-white hover:bg-purple-500 h-10 px-4 py-2;
   }
   
   .qa-secondary-button {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-2 border-purple-300 bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+  }
+
+  .crayon-style {
+    @apply font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
+  }
+  
+  .category-animals {
+    @apply bg-amber-100 text-amber-800 border-amber-300;
+  }
+  
+  .category-space {
+    @apply bg-blue-100 text-blue-800 border-blue-300;
+  }
+  
+  .category-nature {
+    @apply bg-green-100 text-green-800 border-green-300;
+  }
+  
+  .category-science {
+    @apply bg-cyan-100 text-cyan-800 border-cyan-300;
+  }
+  
+  .category-history {
+    @apply bg-stone-100 text-stone-800 border-stone-300;
+  }
+  
+  .category-art {
+    @apply bg-rose-100 text-rose-800 border-rose-300;
+  }
+  
+  .category-music {
+    @apply bg-purple-100 text-purple-800 border-purple-300;
+  }
+  
+  .category-food {
+    @apply bg-orange-100 text-orange-800 border-orange-300;
+  }
+  
+  .category-books {
+    @apply bg-emerald-100 text-emerald-800 border-emerald-300;
+  }
+  
+  .category-games {
+    @apply bg-red-100 text-red-800 border-red-300;
+  }
+  
+  .category-puzzles {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-300;
+  }
+  
+  .category-funnyFacts {
+    @apply bg-pink-100 text-pink-800 border-pink-300;
+  }
+  
+  .category-magic {
+    @apply bg-violet-100 text-violet-800 border-violet-300;
+  }
+  
+  .category-rainbow {
+    @apply bg-gradient-to-r from-red-100 via-yellow-100 to-blue-100 text-gray-800 border-gray-300;
+  }
+  
+  .category-surprise {
+    @apply bg-gradient-to-r from-purple-100 via-pink-100 to-orange-100 text-gray-800 border-gray-300;
   }
 }
 
-/* Add dual language text support */
+/* Add dual language text support - now simplified for Icelandic only */
 .dual-text-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.en-text {
-  text-align: left;
+  display: block;
 }
 
 .is-text {
   text-align: left;
+}
+
+/* Crayon animation for writing */
+@keyframes writing {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+.crayon-writing {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: writing 1.5s steps(30, end);
+}
+
+/* Floating animation for UI elements */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Crayon drawing effect */
+.crayon-border {
+  border-style: solid;
+  border-width: 3px;
+  border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0,0 L 100,0 L 100,100 L 0,100 Z' fill='none' stroke='%238B5CF6' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='5,10' /%3E%3C/svg%3E") 1;
 }
