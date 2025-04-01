@@ -36,6 +36,7 @@ interface QAContextType {
   userAnswerCount: number;
   deleteQuestion: (questionId: string) => void;
   addQuestionVotes: (questionId: string, amount: number) => void;
+  updateQuestionCategory: (questionId: string, category: string) => void;
 }
 
 const QAContext = createContext<QAContextType | undefined>(undefined);
@@ -487,6 +488,32 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     });
   };
 
+  const updateQuestionCategory = (questionId: string, category: string) => {
+    if (!user?.isAdmin) {
+      toast({
+        title: "Aðgangi hafnað",
+        description: "Aðeins stjórnendur geta breytt flokkum spurninga.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setQuestions(questions.map(question => {
+      if (question.id === questionId) {
+        return {
+          ...question,
+          category
+        };
+      }
+      return question;
+    }));
+    
+    toast({
+      title: "Flokkur uppfærður",
+      description: "Flokkur spurningar hefur verið uppfærður.",
+    });
+  };
+
   const userQuestionCount = user 
     ? questions.filter(q => q.authorId === user.id).length 
     : 0;
@@ -531,7 +558,8 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       userQuestionCount,
       userAnswerCount,
       deleteQuestion,
-      addQuestionVotes
+      addQuestionVotes,
+      updateQuestionCategory
     }}>
       {children}
     </QAContext.Provider>

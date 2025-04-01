@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, Laugh } from "lucide-react";
@@ -23,8 +24,8 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
   const handleGenerateQuestion = async () => {
     if (!user) {
       toast({
-        title: "Error",
-        description: "You must be logged in to create AI-generated questions",
+        title: "Villa",
+        description: "Þú þarft að vera skráður inn til að búa til gervigreindar spurningar",
         variant: "destructive"
       });
       return;
@@ -34,13 +35,13 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
     
     try {
       const prompt = magicMode 
-        ? "Generate a funny, slightly absurd question for a Q&A platform. Make it humorous but still somewhat educational. Include both a catchy title and detailed content."
-        : "Generate an interesting question for a Q&A platform";
+        ? "Búðu til fyndna, aðeins absúrda spurningu fyrir spurningasíðu. Gerðu hana húmorística en samt að einhverju leyti fræðandi. Hver hluti þarf að vera vel aðgreindur með 'Titill:', 'Spurning:', 'Heimild:' og 'Mynd:' merkingum."
+        : "Búðu til áhugaverða spurningu fyrir spurningasíðu. Hver hluti þarf að vera vel aðgreindur með 'Titill:', 'Spurning:', 'Heimild:' og 'Mynd:' merkingum.";
       
       const result = await generateQuestionWithAI(prompt);
       
       if (!result) {
-        throw new Error("Failed to generate question");
+        throw new Error("Tókst ekki að búa til spurningu");
       }
       
       const { title, content, source, imageUrl } = result;
@@ -54,15 +55,15 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
       }
       
       toast({
-        title: magicMode ? "Magic Success!" : "Success",
+        title: magicMode ? "Húrra fyrir galdri!" : "Vel gert!",
         description: magicMode 
-          ? "A magical, funny question has appeared!" 
-          : "AI-generated question created successfully!",
+          ? "Töfrakennda, fyndin spurning hefur birst!" 
+          : "Gervigreindar spurning búin til!",
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to generate question with AI",
+        title: "Villa",
+        description: "Mistókst að búa til spurningu með gervigreind",
         variant: "destructive"
       });
     } finally {

@@ -1,11 +1,13 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQA } from '@/context/QAContext';
 import { Button } from '@/components/ui/button';
-import { Question, Answer } from '@/types/qa';
-import { ThumbsUp, Trash2, ExternalLink } from 'lucide-react';
+import { Question, Answer, QuestionCategory } from '@/types/qa';
+import { ThumbsUp, Trash2, ExternalLink, Tag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import DualText from '@/components/DualText';
 
 interface AdminControlsProps {
   question: Question;
@@ -13,9 +15,10 @@ interface AdminControlsProps {
 }
 
 const AdminControls: React.FC<AdminControlsProps> = ({ question, answers }) => {
-  const { user, resetVoteCount, postQuestion, deleteQuestion, addQuestionVotes } = useQA();
+  const { user, resetVoteCount, postQuestion, deleteQuestion, addQuestionVotes, updateQuestionCategory } = useQA();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState<string>(question.category || '');
   
   if (!user?.isAdmin) return null;
   
@@ -41,12 +44,39 @@ const AdminControls: React.FC<AdminControlsProps> = ({ question, answers }) => {
       description: 'Bætt við 5 atkvæðum við spurninguna',
     });
   };
+
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+    updateQuestionCategory(question.id, value);
+    toast({
+      title: 'Flokkur uppfærður',
+      description: 'Flokkur spurningar hefur verið uppfærður',
+    });
+  };
+
+  const categories: QuestionCategory[] = [
+    'animals',
+    'space',
+    'nature',
+    'science',
+    'history',
+    'art',
+    'music',
+    'food',
+    'books',
+    'games',
+    'puzzles',
+    'funnyFacts',
+    'magic',
+    'rainbow',
+    'surprise'
+  ];
   
   return (
     <div className="mt-6 p-4 border rounded-md bg-gray-50">
       <h3 className="text-lg font-semibold mb-3">Stjórnendavalmöguleikar</h3>
       
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 mb-3">
         <Button 
           variant="outline" 
           onClick={resetVoteCount}
@@ -82,6 +112,31 @@ const AdminControls: React.FC<AdminControlsProps> = ({ question, answers }) => {
             {question.posted ? "Þegar birt" : "Birta á Creatomate"}
           </Button>
         )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Tag className="h-4 w-4" />
+        <label htmlFor="categorySelect" className="text-sm font-medium">
+          Breyta flokki:
+        </label>
+        <Select
+          value={selectedCategory}
+          onValueChange={handleCategoryChange}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Veldu flokk" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Flokkar</SelectLabel>
+              {categories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  <DualText textKey={`category${category.charAt(0).toUpperCase() + category.slice(1)}`} />
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
