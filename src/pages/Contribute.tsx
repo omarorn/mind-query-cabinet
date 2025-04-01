@@ -2,14 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useQA } from "@/context/QAContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import AttachmentInput from "@/components/AttachmentInput";
 import DualText from "@/components/DualText";
-import { useLanguage } from "@/context/LanguageContext";
 import AIQuestionButton from "@/components/AIQuestionButton";
+import MagicButton from "@/components/MagicButton";
+import { generateAnswerWithAI } from "@/utils/aiUtils";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ const Contribute = () => {
     url: string;
     name?: string;
   } | null>(null);
+  const [magicMode, setMagicMode] = useState(false);
   
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +83,7 @@ const Contribute = () => {
     }
   };
   
-  const handleAddAnswer = (e: React.FormEvent) => {
+  const handleAddAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedQuestionId || !answerContent.trim()) {
       toast({
@@ -105,10 +108,45 @@ const Contribute = () => {
     setQuestionContent(content);
     setActiveTab("question");
   };
+
+  const handleMagicMode = () => {
+    setMagicMode(true);
+  };
+
+  const handleGenerateAnswer = async () => {
+    if (!selectedQuestionId) {
+      toast({
+        title: "Error",
+        description: "Please select a question first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const selectedQuestion = questions.find(q => q.id === selectedQuestionId);
+    if (!selectedQuestion) return;
+
+    try {
+      const answer = await generateAnswerWithAI(selectedQuestion.title, selectedQuestion.content);
+      if (answer) {
+        setAnswerContent(answer);
+        toast({
+          title: "Magic Answer Generated!",
+          description: "The AI has crafted a witty response for you.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate an answer",
+        variant: "destructive"
+      });
+    }
+  };
   
   return (
     <Layout>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto relative">
         <h1 className="text-3xl font-bold mb-6 text-qa-text">
           <DualText textKey="contributeTitle" className="block" />
         </h1>
@@ -177,7 +215,7 @@ const Contribute = () => {
               )}
 
               <div className="mt-6">
-                <AIQuestionButton onQuestionGenerated={handleAIQuestionGenerated} />
+                <AIQuestionButton onQuestionGenerated={handleAIQuestionGenerated} magicMode={magicMode} />
               </div>
             </div>
             
@@ -285,6 +323,19 @@ const Contribute = () => {
                     </select>
                   </div>
                   
+                  {magicMode && selectedQuestionId && (
+                    <div className="mb-4">
+                      <Button 
+                        type="button" 
+                        onClick={handleGenerateAnswer}
+                        className="w-full mb-4 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600"
+                      >
+                        <Laugh className="mr-2 h-4 w-4" />
+                        <DualText textKey="generateMagicAnswer" />
+                      </Button>
+                    </div>
+                  )}
+                  
                   <div className="mb-4">
                     <label htmlFor="answerContent" className="block text-sm font-medium text-gray-700 mb-1">
                       <DualText textKey="yourAnswer" />
@@ -307,6 +358,8 @@ const Contribute = () => {
             </div>
           </>
         )}
+        
+        <MagicButton onClick={handleMagicMode} />
       </div>
     </Layout>
   );

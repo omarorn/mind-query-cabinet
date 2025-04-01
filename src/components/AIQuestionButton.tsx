@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Laugh } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { generateQuestionWithAI } from "@/utils/aiUtils";
 import { useQA } from "@/context/QAContext";
@@ -8,10 +9,12 @@ import DualText from "./DualText";
 
 interface AIQuestionButtonProps {
   onQuestionGenerated?: (title: string, content: string) => void;
+  magicMode?: boolean;
 }
 
 const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({ 
-  onQuestionGenerated 
+  onQuestionGenerated,
+  magicMode = false
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -30,7 +33,11 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
     setIsLoading(true);
     
     try {
-      const result = await generateQuestionWithAI();
+      const prompt = magicMode 
+        ? "Generate a funny, slightly absurd question for a Q&A platform. Make it humorous but still somewhat educational. Include both a catchy title and detailed content."
+        : "Generate an interesting question for a Q&A platform";
+      
+      const result = await generateQuestionWithAI(prompt);
       
       if (!result) {
         throw new Error("Failed to generate question");
@@ -47,8 +54,10 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
       }
       
       toast({
-        title: "Success",
-        description: "AI-generated question created successfully!",
+        title: magicMode ? "Magic Success!" : "Success",
+        description: magicMode 
+          ? "A magical, funny question has appeared!" 
+          : "AI-generated question created successfully!",
       });
     } catch (error) {
       toast({
@@ -65,7 +74,9 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
     <Button
       onClick={handleGenerateQuestion}
       disabled={isLoading || !user}
-      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+      className={`w-full ${magicMode 
+        ? "bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600" 
+        : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"}`}
     >
       {isLoading ? (
         <>
@@ -74,8 +85,12 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
         </>
       ) : (
         <>
-          <Sparkles className="mr-2 h-4 w-4" />
-          <DualText textKey="generateAIQuestion" />
+          {magicMode ? (
+            <Laugh className="mr-2 h-4 w-4" />
+          ) : (
+            <Sparkles className="mr-2 h-4 w-4" />
+          )}
+          <DualText textKey={magicMode ? "magicQuestion" : "generateAIQuestion"} />
         </>
       )}
     </Button>
