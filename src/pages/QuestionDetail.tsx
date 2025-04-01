@@ -6,7 +6,7 @@ import AdminControls from "@/components/AdminControls";
 import QuestionHeader from "@/components/question/QuestionHeader";
 import QuestionContent from "@/components/question/QuestionContent";
 import AnswerList from "@/components/question/AnswerList";
-import NewsletterSignup from "@/components/question/NewsletterSignup";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import AnswerForm from "@/components/question/AnswerForm";
 import DualText from "@/components/DualText";
 

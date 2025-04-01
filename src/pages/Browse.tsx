@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import QuestionCard from "@/components/QuestionCard";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import { useQA } from "@/context/QAContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -36,17 +36,14 @@ const Browse = () => {
     'surprise'
   ];
 
-  // Filter questions
   const filteredQuestions = questions.filter(q => 
     (!selectedCategory || selectedCategory === "all" || q.category === selectedCategory)
   );
   
-  // Sort filtered questions
   const sortedQuestions = [...filteredQuestions].sort((a, b) => {
     if (selectedSort === "recent") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     } else {
-      // Sort by upvotes only
       return b.upvotes - a.upvotes;
     }
   });
@@ -63,7 +60,6 @@ const Browse = () => {
       setEasterEggMode(!easterEggMode);
       setEggClicks(0);
       
-      // Play sound if activating
       if (!easterEggMode) {
         const audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
         audio.volume = 0.2;
@@ -207,6 +203,10 @@ const Browse = () => {
                   </p>
                 </div>
               )}
+            </div>
+            
+            <div className="mt-12">
+              <NewsletterSignup />
             </div>
             
             {easterEggMode && (
