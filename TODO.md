@@ -27,9 +27,9 @@
 ## Technical Improvements
 - [x] Improve logging for better debugging
 - [x] Add proper error handling for AI operations
+- [x] Refactor the QAContext into smaller, more manageable pieces
 - [ ] Optimize image loading with lazy loading
 - [ ] Implement testing for critical components
-- [ ] Refactor the QAContext into smaller, more manageable pieces
 
 ## Documentation
 - [x] Create todo.md with prioritized tasks
