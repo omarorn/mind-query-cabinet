@@ -28,11 +28,11 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
           <div className="flex flex-col items-center space-y-1">
             <button
               onClick={() => handleVote('up')}
-              disabled={!user || (voteType === 'up' && dailyVotesRemaining <= 0 && answer.userVote !== 'up')}
+              disabled={!user || (dailyVotesRemaining <= 0 && answer.userVote !== 'up')}
               className={cn(
                 "p-1 rounded hover:bg-gray-100 transition-colors", 
                 answer.userVote === 'up' && "text-qa-primary",
-                voteType === 'up' && dailyVotesRemaining <= 0 && answer.userVote !== 'up' && "opacity-50 cursor-not-allowed"
+                dailyVotesRemaining <= 0 && answer.userVote !== 'up' && "opacity-50 cursor-not-allowed"
               )}
               title={dailyVotesRemaining <= 0 && answer.userVote !== 'up' ? t("noVotesRemaining").en : ""}
             >

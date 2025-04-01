@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import AttachmentInput from "@/components/AttachmentInput";
 import DualText from "@/components/DualText";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Contribute = () => {
     userAnswerCount, 
     hasContributed 
   } = useQA();
+  const { t } = useLanguage();
   
   const [name, setName] = useState("");
   const [questionTitle, setQuestionTitle] = useState("");

@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ThumbsUp, ThumbsDown, File, FileVideo, Link, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DualText from "@/components/DualText";
+import { useLanguage } from "@/context/LanguageContext";
 
 const QuestionDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +24,7 @@ const QuestionDetail = () => {
     addAnswer, 
     voteQuestion 
   } = useQA();
+  const { t } = useLanguage();
   
   const [newAnswer, setNewAnswer] = useState("");
   

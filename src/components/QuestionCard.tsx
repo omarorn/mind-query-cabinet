@@ -42,11 +42,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
           <div className="flex flex-col items-center space-y-1">
             <button
               onClick={() => handleVote('up')}
-              disabled={!user || (voteType === 'up' && dailyVotesRemaining <= 0 && question.userVote !== 'up')}
+              disabled={!user || (dailyVotesRemaining <= 0 && question.userVote !== 'up')}
               className={cn(
                 "p-1 rounded hover:bg-gray-100 transition-colors", 
                 question.userVote === 'up' && "text-qa-primary",
-                voteType === 'up' && dailyVotesRemaining <= 0 && question.userVote !== 'up' && "opacity-50 cursor-not-allowed"
+                dailyVotesRemaining <= 0 && question.userVote !== 'up' && "opacity-50 cursor-not-allowed"
               )}
               title={dailyVotesRemaining <= 0 && question.userVote !== 'up' ? t("noVotesRemaining").en : ""}
             >

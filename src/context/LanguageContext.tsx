@@ -139,6 +139,17 @@ const translations: Translations = {
   fileAttachment: { en: 'File Attachment', is: 'Skráarviðhengi' },
   videoAttachment: { en: 'Video Attachment', is: 'Myndbandviðhengi' },
   linkAttachment: { en: 'Link Attachment', is: 'Hlekksviðhengi' },
+  
+  // New translations for voting limits
+  voteLimit: { en: 'Daily Vote Limit Reached', is: 'Daglegu atkvæðamarki náð' },
+  voteLimitDesc: { 
+    en: 'You have used all 5 of your daily upvotes. Try again tomorrow.', 
+    is: 'Þú hefur notað öll 5 daglegu uppatkvæði þín. Reyndu aftur á morgun.' 
+  },
+  noVotesRemaining: { 
+    en: 'No more upvotes remaining today', 
+    is: 'Engin fleiri uppatkvæði eftir í dag' 
+  },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
