@@ -16,7 +16,7 @@ serve(async (req) => {
   }
 
   try {
-    const { question, answer } = await req.json();
+    const { question, answer, factChecked, simplifiedQuestion, simplifiedAnswer } = await req.json();
 
     if (!question || !answer) {
       return new Response(
@@ -25,7 +25,13 @@ serve(async (req) => {
       );
     }
 
-    console.log('Sending to Creatomate:', { question, answer });
+    console.log('Sending to Creatomate:', { 
+      question, 
+      answer, 
+      factChecked: factChecked || "No fact check available",
+      simplifiedQuestion: simplifiedQuestion || question,
+      simplifiedAnswer: simplifiedAnswer || answer
+    });
 
     const response = await fetch('https://api.creatomate.com/v1/renders', {
       method: 'POST',
@@ -39,7 +45,10 @@ serve(async (req) => {
           "Question.text": question,
           "Answer.text": answer,
           "Shape.fill_color": "rgba(255,107,107,1)",
-          "Title.text": "Spurningar & Svör"
+          "Title.text": factChecked ? "Spurningar & Svör (Fact Checked)" : "Spurningar & Svör",
+          "FactCheck.text": factChecked || "",
+          "KidsVersion.text": simplifiedQuestion && simplifiedAnswer ? 
+            `Fyrir börn:\n${simplifiedQuestion}\n${simplifiedAnswer}` : ""
         }
       })
     });

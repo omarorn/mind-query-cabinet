@@ -11,31 +11,45 @@ interface AdminActionsProps {
 export const useAdminActions = ({
   user,
   questions,
-  setQuestions,
+  setQuestions
 }: AdminActionsProps) => {
-
   const postQuestion = async (questionId: string, answerId: string) => {
     if (!user?.isAdmin) {
       toast({
-        title: "Permission Denied",
-        description: "Only administrators can post questions.",
+        title: "Aðgangi hafnað",
+        description: "Aðeins stjórnendur geta birt spurningar á Creatomate.",
         variant: "destructive",
       });
       return;
     }
-
+    
     try {
       const question = questions.find(q => q.id === questionId);
       
       if (!question) {
         toast({
-          title: "Error",
-          description: "Question or answer not found.",
+          title: "Villa",
+          description: "Spurning fannst ekki.",
           variant: "destructive",
         });
         return;
       }
-
+      
+      // Find the answer in localStorage
+      const answersJson = localStorage.getItem('qa-answers');
+      const answers: Answer[] = answersJson ? JSON.parse(answersJson) : [];
+      const answer = answers.find(a => a.id === answerId);
+      
+      if (!answer) {
+        toast({
+          title: "Villa",
+          description: "Svar fannst ekki.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Call the Supabase Edge Function
       const response = await fetch('/api/creatomate-post', {
         method: 'POST',
         headers: {
@@ -43,30 +57,33 @@ export const useAdminActions = ({
         },
         body: JSON.stringify({
           question: question.title,
-          answer: "Answer content" // This will be replaced with the actual answer in the component
+          answer: answer.content,
+          factChecked: answer.factCheck,
+          simplifiedQuestion: answer.simplifiedQuestion,
+          simplifiedAnswer: answer.simplifiedAnswer
         }),
       });
-
+      
       if (!response.ok) {
-        throw new Error('Failed to post content');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Óþekkt villa við birtingu');
       }
-
-      setQuestions(questions.map(q => {
-        if (q.id === questionId) {
-          return { ...q, posted: true };
-        }
-        return q;
-      }));
-
+      
+      // Mark the question as posted
+      setQuestions(questions.map(q => 
+        q.id === questionId ? { ...q, posted: true } : q
+      ));
+      
       toast({
-        title: "Posted Successfully",
-        description: "The question and answer have been posted.",
+        title: "Birting tókst",
+        description: "Spurning og svar hefur verið birt á Creatomate.",
       });
+      
     } catch (error) {
-      console.error('Error posting content:', error);
+      console.error("Error posting to Creatomate:", error);
       toast({
-        title: "Error",
-        description: "Failed to post content. Please try again.",
+        title: "Villa við birtingu",
+        description: error instanceof Error ? error.message : "Villa við að birta á Creatomate",
         variant: "destructive",
       });
     }

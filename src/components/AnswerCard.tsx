@@ -1,5 +1,5 @@
 
-import { ThumbsUp } from "lucide-react";
+import { ThumbsUp, CheckCircle2, Brain } from "lucide-react";
 import { useState } from "react";
 import { Answer } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
@@ -16,6 +16,8 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
   const { voteAnswer, user, hasContributed, dailyVotesRemaining } = useQA();
   const { t } = useLanguage();
   const [expanded, setExpanded] = useState(false);
+  const [showFactCheck, setShowFactCheck] = useState(false);
+  const [showKidsVersion, setShowKidsVersion] = useState(false);
   
   const formattedDate = new Date(answer.createdAt).toLocaleDateString();
   
@@ -57,14 +59,55 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
         <div className="flex-1">
           <p className="text-gray-700 mb-3">{displayContent}</p>
           
-          {answer.content.length > 50 && (
-            <Button 
-              variant="link" 
-              className="p-0 h-auto text-qa-primary mb-2" 
-              onClick={() => setExpanded(!expanded)}
-            >
-              {expanded ? t("showLess").is : t("readMore").is}
-            </Button>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {answer.content.length > 50 && (
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-qa-primary" 
+                onClick={() => setExpanded(!expanded)}
+              >
+                {expanded ? t("showLess").is : t("readMore").is}
+              </Button>
+            )}
+            
+            {answer.factCheck && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 text-xs"
+                onClick={() => setShowFactCheck(!showFactCheck)}
+              >
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                {showFactCheck ? "Hide Fact Check" : "Show Fact Check"}
+              </Button>
+            )}
+            
+            {answer.simplifiedQuestion && answer.simplifiedAnswer && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 text-xs"
+                onClick={() => setShowKidsVersion(!showKidsVersion)}
+              >
+                <Brain className="h-3.5 w-3.5" />
+                {showKidsVersion ? "Hide Kids Version" : "Show Kids Version"}
+              </Button>
+            )}
+          </div>
+          
+          {showFactCheck && answer.factCheck && (
+            <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3">
+              <h4 className="text-sm font-medium text-green-800 mb-1">Fact Check</h4>
+              <p className="text-sm text-green-700">{answer.factCheck}</p>
+            </div>
+          )}
+          
+          {showKidsVersion && answer.simplifiedQuestion && answer.simplifiedAnswer && (
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-3">
+              <h4 className="text-sm font-medium text-blue-800 mb-1">For Children (7 years old)</h4>
+              <p className="text-sm font-medium text-blue-700 mb-1">{answer.simplifiedQuestion}</p>
+              <p className="text-sm text-blue-700">{answer.simplifiedAnswer}</p>
+            </div>
           )}
           
           <div className="text-sm text-gray-500">

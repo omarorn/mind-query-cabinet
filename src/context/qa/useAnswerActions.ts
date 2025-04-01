@@ -18,7 +18,15 @@ export const useAnswerActions = ({
   checkContributionStatus
 }: AnswerActionsProps) => {
 
-  const addAnswer = (questionId: string, content: string) => {
+  const addAnswer = (
+    questionId: string, 
+    content: string, 
+    metadata?: {
+      factCheck?: string | null;
+      simplifiedQuestion?: string | null;
+      simplifiedAnswer?: string | null;
+    }
+  ) => {
     if (!user) return;
     
     // Generate punchline for the answer
@@ -34,7 +42,10 @@ export const useAnswerActions = ({
       createdAt: new Date().toISOString(),
       authorId: user.id,
       authorName: user.name,
-      upvotes: 0
+      upvotes: 0,
+      factCheck: metadata?.factCheck || null,
+      simplifiedQuestion: metadata?.simplifiedQuestion || null,
+      simplifiedAnswer: metadata?.simplifiedAnswer || null
     };
     
     setAnswers([...answers, newAnswer]);

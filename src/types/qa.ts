@@ -40,6 +40,9 @@ export interface Answer {
   upvotes: number;
   userVote?: 'up' | null;
   userVoteDate?: string;
+  factCheck?: string | null;
+  simplifiedQuestion?: string | null;
+  simplifiedAnswer?: string | null;
 }
 
 export type QuestionCategory = 

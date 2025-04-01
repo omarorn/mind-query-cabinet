@@ -24,7 +24,15 @@ export interface QAContextType {
     imageUrl?: string,
     category?: string
   ) => void;
-  addAnswer: (questionId: string, content: string) => void;
+  addAnswer: (
+    questionId: string, 
+    content: string, 
+    metadata?: {
+      factCheck?: string | null;
+      simplifiedQuestion?: string | null;
+      simplifiedAnswer?: string | null;
+    }
+  ) => void;
   voteQuestion: (questionId: string, voteType: 'up') => void;
   voteAnswer: (answerId: string, voteType: 'up') => void;
   resetVoteCount: () => void;
