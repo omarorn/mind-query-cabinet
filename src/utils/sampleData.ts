@@ -154,7 +154,7 @@ export const populateSampleData = (
   addAnswerFn: (questionId: string, content: string) => void,
   userId: string,
   userName: string
-): void => {
+) => {
   const sampleQuestions = generateSampleQuestions(userId, userName);
   
   sampleQuestions.forEach(question => {
