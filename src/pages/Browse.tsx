@@ -6,8 +6,6 @@ import QuestionCard from "@/components/QuestionCard";
 import { useQA } from "@/context/QAContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import DualText from "@/components/DualText";
-import { useLanguage } from "@/context/LanguageContext";
 import { QuestionCategory } from "@/types/qa";
 import { motion } from "framer-motion";
 import { Egg, Gift } from "lucide-react";
@@ -16,7 +14,6 @@ const Browse = () => {
   const { questions, answers, hasContributed, resetVoteCount, postQuestion, user } = useQA();
   const [selectedSort, setSelectedSort] = useState<"recent" | "popular">("recent");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const [easterEggMode, setEasterEggMode] = useState<boolean>(false);
   const [eggClicks, setEggClicks] = useState(0);
@@ -34,7 +31,7 @@ const Browse = () => {
     'travel',
     'business',
     'health',
-    'arts',
+    'art',
     'language',
     'surprise'
   ];
@@ -79,7 +76,7 @@ const Browse = () => {
     <Layout>
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-qa-text flex items-center justify-between">
-          <DualText textKey="browseQuestions" className="block" />
+          Skoða spurningar
           <motion.div 
             whileHover={{ scale: 1.1, rotate: 5 }}
             className="cursor-pointer" 
@@ -96,13 +93,13 @@ const Browse = () => {
         {!hasContributed ? (
           <div className="qa-card text-center py-8">
             <h2 className="text-xl font-semibold mb-2">
-              <DualText textKey="contributionRequired" />
+              Þú þarft að leggja þitt af mörkum
             </h2>
             <p className="mb-4 text-gray-600">
-              <DualText textKey="contributionRequiredDesc" />
+              Til að fá aðgang að öllum spurningum þarftu að leggja þitt af mörkum með því að bæta við spurningum eða svörum.
             </p>
             <Button onClick={() => navigate("/contribute")}>
-              <DualText textKey="startContributing" />
+              Byrja að leggja til
             </Button>
           </div>
         ) : (
@@ -113,13 +110,13 @@ const Browse = () => {
                   variant={selectedSort === "recent" ? "default" : "outline"}
                   onClick={() => setSelectedSort("recent")}
                 >
-                  <DualText textKey="recent" />
+                  Nýjast
                 </Button>
                 <Button
                   variant={selectedSort === "popular" ? "default" : "outline"}
                   onClick={() => setSelectedSort("popular")}
                 >
-                  <DualText textKey="popular" />
+                  Vinsælast
                 </Button>
               </div>
               
@@ -129,10 +126,10 @@ const Browse = () => {
                   onValueChange={setSelectedCategory}
                 >
                   <SelectTrigger className="w-full md:w-[180px]">
-                    <SelectValue placeholder="All categories" />
+                    <SelectValue placeholder="Allir flokkar" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All categories</SelectItem>
+                    <SelectItem value="all">Allir flokkar</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category} value={category}>
                         {category}
@@ -148,7 +145,7 @@ const Browse = () => {
                     variant="outline" 
                     onClick={resetVoteCount}
                   >
-                    Reset Vote Count
+                    Endurstilla atkvæði
                   </Button>
                 </div>
               )}
@@ -181,7 +178,7 @@ const Browse = () => {
                             }}
                             disabled={question.posted}
                           >
-                            {question.posted ? "Already Posted" : "Post to Creatomate"}
+                            {question.posted ? "Þegar birt" : "Birta á Creatomate"}
                           </Button>
                         )}
                       </div>
@@ -191,7 +188,7 @@ const Browse = () => {
               ) : (
                 <div className="qa-card text-center py-8">
                   <p className="text-gray-600">
-                    <DualText textKey="noQuestionsFound" />
+                    Engar spurningar fundust
                   </p>
                 </div>
               )}
@@ -204,7 +201,7 @@ const Browse = () => {
                 animate={{ scale: 1, rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 0.5 }}
               >
-                Magic mode activated! 🎉
+                Töfrahamur virkjaður! 🎉
               </motion.div>
             )}
           </>
