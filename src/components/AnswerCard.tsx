@@ -11,7 +11,7 @@ interface AnswerCardProps {
 }
 
 const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
-  const { voteAnswer, user, hasContributed } = useQA();
+  const { voteAnswer, user, hasContributed, dailyVotesRemaining } = useQA();
   const { t } = useLanguage();
   
   const formattedDate = new Date(answer.createdAt).toLocaleDateString();
@@ -28,11 +28,13 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
           <div className="flex flex-col items-center space-y-1">
             <button
               onClick={() => handleVote('up')}
-              disabled={!user}
+              disabled={!user || (voteType === 'up' && dailyVotesRemaining <= 0 && answer.userVote !== 'up')}
               className={cn(
                 "p-1 rounded hover:bg-gray-100 transition-colors", 
-                answer.userVote === 'up' && "text-qa-primary"
+                answer.userVote === 'up' && "text-qa-primary",
+                voteType === 'up' && dailyVotesRemaining <= 0 && answer.userVote !== 'up' && "opacity-50 cursor-not-allowed"
               )}
+              title={dailyVotesRemaining <= 0 && answer.userVote !== 'up' ? t("noVotesRemaining").en : ""}
             >
               <ThumbsUp size={18} />
             </button>

@@ -14,6 +14,7 @@ export interface Question {
   upvotes: number;
   downvotes: number;
   userVote?: 'up' | 'down' | null;
+  userVoteDate?: string;
   attachment?: {
     type: 'file' | 'video' | 'link';
     url: string;
@@ -32,4 +33,5 @@ export interface Answer {
   upvotes: number;
   downvotes: number;
   userVote?: 'up' | 'down' | null;
+  userVoteDate?: string;
 }

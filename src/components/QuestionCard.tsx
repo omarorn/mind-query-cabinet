@@ -12,7 +12,7 @@ interface QuestionCardProps {
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
-  const { voteQuestion, user, hasContributed } = useQA();
+  const { voteQuestion, user, hasContributed, dailyVotesRemaining } = useQA();
   const { t } = useLanguage();
   
   const formattedDate = new Date(question.createdAt).toLocaleDateString();
@@ -42,11 +42,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
           <div className="flex flex-col items-center space-y-1">
             <button
               onClick={() => handleVote('up')}
-              disabled={!user}
+              disabled={!user || (voteType === 'up' && dailyVotesRemaining <= 0 && question.userVote !== 'up')}
               className={cn(
                 "p-1 rounded hover:bg-gray-100 transition-colors", 
-                question.userVote === 'up' && "text-qa-primary"
+                question.userVote === 'up' && "text-qa-primary",
+                voteType === 'up' && dailyVotesRemaining <= 0 && question.userVote !== 'up' && "opacity-50 cursor-not-allowed"
               )}
+              title={dailyVotesRemaining <= 0 && question.userVote !== 'up' ? t("noVotesRemaining").en : ""}
             >
               <ThumbsUp size={18} />
             </button>

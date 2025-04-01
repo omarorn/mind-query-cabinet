@@ -2,12 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Question, Answer, User } from '@/types/qa';
 import { toast } from "@/components/ui/use-toast";
+import { useLanguage } from '@/context/LanguageContext';
 
 interface QAContextType {
   user: User | null;
   questions: Question[];
   answers: Answer[];
   hasContributed: boolean;
+  dailyVotesRemaining: number;
   createUser: (name: string) => void;
   addQuestion: (
     title: string, 
@@ -29,29 +31,49 @@ interface QAContextType {
 const QAContext = createContext<QAContextType | undefined>(undefined);
 
 export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { t } = useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [hasContributed, setHasContributed] = useState(false);
+  const [dailyVotes, setDailyVotes] = useState<{date: string, count: number}>({
+    date: new Date().toDateString(),
+    count: 0
+  });
+
+  const dailyVotesRemaining = 5 - dailyVotes.count;
 
   useEffect(() => {
     const storedUser = localStorage.getItem('qa-user');
     const storedQuestions = localStorage.getItem('qa-questions');
     const storedAnswers = localStorage.getItem('qa-answers');
     const storedContributed = localStorage.getItem('qa-contributed');
+    const storedDailyVotes = localStorage.getItem('qa-daily-votes');
 
     if (storedUser) setUser(JSON.parse(storedUser));
     if (storedQuestions) setQuestions(JSON.parse(storedQuestions));
     if (storedAnswers) setAnswers(JSON.parse(storedAnswers));
     if (storedContributed) setHasContributed(JSON.parse(storedContributed));
+    if (storedDailyVotes) setDailyVotes(JSON.parse(storedDailyVotes));
   }, []);
+
+  useEffect(() => {
+    const today = new Date().toDateString();
+    if (dailyVotes.date !== today) {
+      setDailyVotes({
+        date: today,
+        count: 0
+      });
+    }
+  }, [dailyVotes.date]);
 
   useEffect(() => {
     if (user) localStorage.setItem('qa-user', JSON.stringify(user));
     if (questions.length) localStorage.setItem('qa-questions', JSON.stringify(questions));
     if (answers.length) localStorage.setItem('qa-answers', JSON.stringify(answers));
     localStorage.setItem('qa-contributed', JSON.stringify(hasContributed));
-  }, [user, questions, answers, hasContributed]);
+    localStorage.setItem('qa-daily-votes', JSON.stringify(dailyVotes));
+  }, [user, questions, answers, hasContributed, dailyVotes]);
 
   const createUser = (name: string) => {
     const newUser = {
@@ -125,6 +147,40 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const voteQuestion = (questionId: string, voteType: 'up' | 'down') => {
     if (!user) return;
     
+    const question = questions.find(q => q.id === questionId);
+    if (!question) return;
+    
+    if (voteType === 'up') {
+      if (question.userVote === 'up') {
+        setQuestions(questions.map(q => {
+          if (q.id === questionId) {
+            return {
+              ...q,
+              upvotes: q.upvotes - 1,
+              userVote: null,
+              userVoteDate: undefined
+            };
+          }
+          return q;
+        }));
+        return;
+      }
+      
+      if (dailyVotes.count >= 5) {
+        toast({
+          title: t("voteLimit").en,
+          description: t("voteLimitDesc").en,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setDailyVotes({
+        ...dailyVotes,
+        count: dailyVotes.count + 1
+      });
+    }
+    
     setQuestions(questions.map(question => {
       if (question.id === questionId) {
         let newUpvotes = question.upvotes;
@@ -140,7 +196,8 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
           ...question,
           upvotes: newUpvotes,
           downvotes: newDownvotes,
-          userVote: question.userVote === voteType ? null : voteType
+          userVote: question.userVote === voteType ? null : voteType,
+          userVoteDate: new Date().toISOString()
         };
       }
       return question;
@@ -149,6 +206,40 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   const voteAnswer = (answerId: string, voteType: 'up' | 'down') => {
     if (!user) return;
+    
+    const answer = answers.find(a => a.id === answerId);
+    if (!answer) return;
+    
+    if (voteType === 'up') {
+      if (answer.userVote === 'up') {
+        setAnswers(answers.map(a => {
+          if (a.id === answerId) {
+            return {
+              ...a,
+              upvotes: a.upvotes - 1,
+              userVote: null,
+              userVoteDate: undefined
+            };
+          }
+          return a;
+        }));
+        return;
+      }
+      
+      if (dailyVotes.count >= 5) {
+        toast({
+          title: t("voteLimit").en,
+          description: t("voteLimitDesc").en,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setDailyVotes({
+        ...dailyVotes,
+        count: dailyVotes.count + 1
+      });
+    }
     
     setAnswers(answers.map(answer => {
       if (answer.id === answerId) {
@@ -165,7 +256,8 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
           ...answer,
           upvotes: newUpvotes,
           downvotes: newDownvotes,
-          userVote: answer.userVote === voteType ? null : voteType
+          userVote: answer.userVote === voteType ? null : voteType,
+          userVoteDate: new Date().toISOString()
         };
       }
       return answer;
@@ -202,6 +294,7 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       questions, 
       answers, 
       hasContributed,
+      dailyVotesRemaining,
       createUser, 
       addQuestion, 
       addAnswer, 
