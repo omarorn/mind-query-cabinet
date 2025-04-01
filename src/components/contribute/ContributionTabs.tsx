@@ -79,7 +79,7 @@ const ContributionTabs: React.FC<ContributionTabsProps> = ({
       
       <TabsContent value="question" className="qa-card">
         <h2 className="text-xl font-semibold mb-4">
-          <DualText textKey="askQuestionTitle" />
+          <DualText textKey="askQuestion" />
         </h2>
         <QuestionForm
           questionTitle={questionTitle}
@@ -101,7 +101,7 @@ const ContributionTabs: React.FC<ContributionTabsProps> = ({
       
       <TabsContent value="answer" className="qa-card">
         <h2 className="text-xl font-semibold mb-4">
-          <DualText textKey="answerQuestionTitle" />
+          <DualText textKey="answerQuestion" />
         </h2>
         <AnswerForm
           questions={questions}

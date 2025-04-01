@@ -18,10 +18,7 @@ const AutomagicAnswer: React.FC<AutomagicAnswerProps> = ({ onGenerate }) => {
       className="w-full mb-4 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600"
     >
       <Laugh className="mr-2 h-4 w-4" />
-      <div className="grid grid-cols-2 gap-2">
-        <div className="text-left">{t("generateMagicAnswer").en}</div>
-        <div className="text-left">{t("generateMagicAnswer").is}</div>
-      </div>
+      <span>{t("generateMagicAnswer").is}</span>
     </Button>
   );
 };

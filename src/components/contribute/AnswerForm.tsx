@@ -42,7 +42,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-qa-primary"
           required
         >
-          <option value="">{t("selectQuestionPlaceholder").en}</option>
+          <option value="">{t("selectQuestionPlaceholder").is}</option>
           {questions.map(question => (
             <option key={question.id} value={question.id}>
               {question.title}
@@ -65,7 +65,7 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
           id="answerContent"
           value={answerContent}
           onChange={(e) => onAnswerChange(e.target.value)}
-          placeholder={t("yourAnswerPlaceholder").en}
+          placeholder={t("yourAnswerPlaceholder").is}
           rows={5}
           required
         />

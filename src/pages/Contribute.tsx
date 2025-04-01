@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -11,8 +10,10 @@ import ContributionStats from "@/components/contribute/ContributionStats";
 import ContributionTabs from "@/components/contribute/ContributionTabs";
 import APIKeyInput from "@/components/APIKeyInput";
 import LoginForm from "@/components/LoginForm";
+import DualText from "@/components/DualText";
 import { generateAnswerWithAI } from "@/utils/aiUtils";
 import { hasGeminiKey } from "@/utils/keyUtils";
+import { QuestionCategory } from "@/types/qa";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -159,10 +160,7 @@ const Contribute = () => {
       <div className="max-w-3xl mx-auto relative">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-qa-text">
-            <div className="grid grid-cols-2 gap-2 block">
-              <div className="text-left">{t("contributeTitle").en}</div>
-              <div className="text-left">{t("contributeTitle").is}</div>
-            </div>
+            <DualText textKey="contributeTitle" />
           </h1>
           <LoginForm />
         </div>

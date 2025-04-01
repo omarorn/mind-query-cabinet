@@ -51,20 +51,20 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [easterEggFound, setEasterEggFound] = useState(false);
   
   const categories: QuestionCategory[] = [
+    'animals',
+    'space',
+    'nature',
     'science',
     'history',
-    'technology',
-    'culture',
-    'education',
-    'nature',
-    'sports',
-    'entertainment',
+    'art',
+    'music',
     'food',
-    'travel',
-    'business',
-    'health',
-    'arts',
-    'language',
+    'books',
+    'games',
+    'puzzles',
+    'funnyFacts',
+    'magic',
+    'rainbow',
     'surprise'
   ];
   
@@ -91,7 +91,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           id="questionTitle"
           value={questionTitle}
           onChange={(e) => onQuestionTitleChange(e.target.value)}
-          placeholder={t("questionTitlePlaceholder").en}
+          placeholder={t("questionTitlePlaceholder").is}
           required
         />
       </div>
@@ -104,7 +104,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           id="questionContent"
           value={questionContent}
           onChange={(e) => handleContentChange(e.target.value)}
-          placeholder={t("questionDetailsPlaceholder").en}
+          placeholder={t("questionDetailsPlaceholder").is}
           rows={5}
           required
         />
@@ -112,27 +112,27 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       
       <div className="mb-4">
         <label htmlFor="questionCategory" className="block text-sm font-medium text-gray-700 mb-1">
-          <DualText textKey="category" />
+          <DualText textKey="categories" />
         </label>
         <Select
           value={questionCategory}
           onValueChange={onQuestionCategoryChange}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a category" />
+            <SelectValue placeholder="Veldu flokk" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Categories</SelectLabel>
+              <SelectLabel><DualText textKey="categories" /></SelectLabel>
               {categories.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category === 'surprise' ? (
                     <div className="flex items-center">
-                      <span>{category}</span>
+                      <span><DualText textKey={`category${category.charAt(0).toUpperCase() + category.slice(1)}`} /></span>
                       <Sparkles className="ml-2 h-4 w-4 text-pink-500" />
                     </div>
                   ) : (
-                    category
+                    <DualText textKey={`category${category.charAt(0).toUpperCase() + category.slice(1)}`} />
                   )}
                 </SelectItem>
               ))}
@@ -149,7 +149,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           id="questionArticle"
           value={questionArticle}
           onChange={(e) => onQuestionArticleChange(e.target.value)}
-          placeholder={t("articleFactsPlaceholder").en}
+          placeholder={t("articleFactsPlaceholder").is}
           rows={3}
         />
         <p className="text-xs text-gray-500 mt-1">
@@ -202,7 +202,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       
       {easterEggFound && (
         <div className="mt-4 p-3 border border-pink-300 bg-pink-50 rounded-md text-pink-800 text-sm animate-bounce">
-          You found an Easter egg! 🎉 Your question will get special treatment.
+          Þú fannst páskaegg! 🎉 Spurningin þín fær sérstaka meðferð.
         </div>
       )}
     </form>
