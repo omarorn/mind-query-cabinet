@@ -42,6 +42,7 @@ const Contribute = () => {
   } | null>(null);
   const [questionSource, setQuestionSource] = useState("");
   const [questionImageUrl, setQuestionImageUrl] = useState("");
+  const [questionCategory, setQuestionCategory] = useState("");
   const [magicMode, setMagicMode] = useState(false);
   
   const handleAddQuestion = (e: React.FormEvent) => {
@@ -61,7 +62,8 @@ const Contribute = () => {
       questionArticle.trim() || undefined,
       questionAttachment,
       questionSource.trim() || undefined,
-      questionImageUrl.trim() || undefined
+      questionImageUrl.trim() || undefined,
+      questionCategory || undefined
     );
     
     setQuestionTitle("");
@@ -70,6 +72,7 @@ const Contribute = () => {
     setQuestionAttachment(null);
     setQuestionSource("");
     setQuestionImageUrl("");
+    setQuestionCategory("");
     
     if (userQuestionCount + userAnswerCount + 1 >= 3) {
       navigate("/browse");
@@ -101,11 +104,23 @@ const Contribute = () => {
     setQuestionContent(content);
     setQuestionSource(source || "");
     setQuestionImageUrl(imageUrl || "");
+    
+    // Randomly assign a category to AI-generated questions
+    const categories = ['science', 'history', 'technology', 'culture', 'education'];
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    setQuestionCategory(randomCategory);
+    
     setActiveTab("question");
   };
 
   const handleMagicMode = () => {
     setMagicMode(true);
+    
+    // Easter egg: Change the background color momentarily when magic mode is activated
+    document.body.classList.add('magic-mode-transition');
+    setTimeout(() => {
+      document.body.classList.remove('magic-mode-transition');
+    }, 1000);
   };
 
   const handleGenerateAnswer = async () => {
@@ -187,6 +202,12 @@ const Contribute = () => {
               onGenerateAnswer={handleGenerateAnswer}
               onQuestionSubmit={handleAddQuestion}
               onAnswerSubmit={handleAddAnswer}
+              questionSource={questionSource}
+              questionImageUrl={questionImageUrl}
+              questionCategory={questionCategory}
+              onQuestionSourceChange={setQuestionSource}
+              onQuestionImageUrlChange={setQuestionImageUrl}
+              onQuestionCategoryChange={setQuestionCategory}
             />
           </>
         )}

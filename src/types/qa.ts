@@ -25,6 +25,8 @@ export interface Question {
   posted?: boolean;
   source?: string;
   imageUrl?: string;
+  category?: string;
+  isEasterEgg?: boolean;
 }
 
 export interface Answer {
@@ -38,3 +40,20 @@ export interface Answer {
   userVote?: 'up' | null;
   userVoteDate?: string;
 }
+
+export type QuestionCategory = 
+  | 'science'
+  | 'history'
+  | 'technology'
+  | 'culture'
+  | 'education'
+  | 'nature'
+  | 'sports'
+  | 'entertainment'
+  | 'food'
+  | 'travel'
+  | 'business'
+  | 'health'
+  | 'arts'
+  | 'language'
+  | 'surprise';

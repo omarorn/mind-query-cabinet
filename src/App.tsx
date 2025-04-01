@@ -12,6 +12,7 @@ import QuestionDetail from "./pages/QuestionDetail";
 import Contribute from "./pages/Contribute";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import "./easterEggs.css";
 
 const queryClient = new QueryClient();
 

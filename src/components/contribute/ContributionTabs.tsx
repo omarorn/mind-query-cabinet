@@ -1,13 +1,16 @@
 
 import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Question } from '@/types/qa';
+import { useLanguage } from '@/context/LanguageContext';
 import DualText from '@/components/DualText';
-import QuestionForm from './QuestionForm';
-import AnswerForm from './AnswerForm';
+import QuestionForm from '@/components/contribute/QuestionForm';
+import AnswerForm from '@/components/contribute/AnswerForm';
 
 interface ContributionTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  questions: Array<{ id: string; title: string }>;
+  questions: Question[];
   questionTitle: string;
   questionContent: string;
   questionArticle: string;
@@ -17,8 +20,8 @@ interface ContributionTabsProps {
   onQuestionTitleChange: (value: string) => void;
   onQuestionContentChange: (value: string) => void;
   onQuestionArticleChange: (value: string) => void;
-  onQuestionSelect: (questionId: string) => void;
-  onAnswerChange: (content: string) => void;
+  onQuestionSelect: (id: string) => void;
+  onAnswerChange: (value: string) => void;
   onAttachmentChange: (attachment: {
     type: 'file' | 'video' | 'link';
     url: string;
@@ -29,8 +32,10 @@ interface ContributionTabsProps {
   onAnswerSubmit: (e: React.FormEvent) => void;
   questionSource?: string;
   questionImageUrl?: string;
+  questionCategory?: string;
   onQuestionSourceChange?: (value: string) => void;
   onQuestionImageUrlChange?: (value: string) => void;
+  onQuestionCategoryChange?: (value: string) => void;
 }
 
 const ContributionTabs: React.FC<ContributionTabsProps> = ({
@@ -54,50 +59,50 @@ const ContributionTabs: React.FC<ContributionTabsProps> = ({
   onAnswerSubmit,
   questionSource = "",
   questionImageUrl = "",
+  questionCategory = "",
   onQuestionSourceChange = () => {},
-  onQuestionImageUrlChange = () => {}
+  onQuestionImageUrlChange = () => {},
+  onQuestionCategoryChange = () => {}
 }) => {
+  const { t } = useLanguage();
+  
   return (
-    <div className="qa-card">
-      <div className="flex border-b mb-6">
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === "question" 
-              ? "border-b-2 border-qa-primary text-qa-primary" 
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("question")}
-        >
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="question">
           <DualText textKey="askQuestion" />
-        </button>
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === "answer" 
-              ? "border-b-2 border-qa-primary text-qa-primary" 
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("answer")}
-        >
+        </TabsTrigger>
+        <TabsTrigger value="answer">
           <DualText textKey="answerQuestion" />
-        </button>
-      </div>
+        </TabsTrigger>
+      </TabsList>
       
-      {activeTab === "question" ? (
+      <TabsContent value="question" className="qa-card">
+        <h2 className="text-xl font-semibold mb-4">
+          <DualText textKey="askQuestionTitle" />
+        </h2>
         <QuestionForm
           questionTitle={questionTitle}
           questionContent={questionContent}
           questionArticle={questionArticle}
-          questionSource={questionSource}
-          questionImageUrl={questionImageUrl}
           onQuestionTitleChange={onQuestionTitleChange}
           onQuestionContentChange={onQuestionContentChange}
           onQuestionArticleChange={onQuestionArticleChange}
-          onQuestionSourceChange={onQuestionSourceChange}
-          onQuestionImageUrlChange={onQuestionImageUrlChange}
           onAttachmentChange={onAttachmentChange}
           onSubmit={onQuestionSubmit}
+          questionSource={questionSource}
+          questionImageUrl={questionImageUrl}
+          questionCategory={questionCategory}
+          onQuestionSourceChange={onQuestionSourceChange}
+          onQuestionImageUrlChange={onQuestionImageUrlChange}
+          onQuestionCategoryChange={onQuestionCategoryChange}
         />
-      ) : (
+      </TabsContent>
+      
+      <TabsContent value="answer" className="qa-card">
+        <h2 className="text-xl font-semibold mb-4">
+          <DualText textKey="answerQuestionTitle" />
+        </h2>
         <AnswerForm
           questions={questions}
           selectedQuestionId={selectedQuestionId}
@@ -108,8 +113,8 @@ const ContributionTabs: React.FC<ContributionTabsProps> = ({
           onGenerateAnswer={onGenerateAnswer}
           onSubmit={onAnswerSubmit}
         />
-      )}
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 };
 

@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Question, Answer, User } from '@/types/qa';
+import { Question, Answer, User, QuestionCategory } from '@/types/qa';
 import { toast } from "@/components/ui/use-toast";
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -25,7 +25,8 @@ interface QAContextType {
       name?: string;
     } | null,
     source?: string,
-    imageUrl?: string
+    imageUrl?: string,
+    category?: string
   ) => void;
   addAnswer: (questionId: string, content: string) => void;
   voteQuestion: (questionId: string, voteType: 'up') => void;
@@ -192,9 +193,16 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       name?: string;
     } | null,
     source?: string,
-    imageUrl?: string
+    imageUrl?: string,
+    category?: string
   ) => {
     if (!user) return;
+    
+    // Easter egg detection in content
+    const hasEasterEgg = 
+      content.toLowerCase().includes("easter egg") || 
+      content.toLowerCase().includes("secret") ||
+      title.toLowerCase().includes("hidden");
     
     const newQuestion: Question = {
       id: uuidv4(),
@@ -207,16 +215,27 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       article: article,
       attachment: attachment || undefined,
       source,
-      imageUrl
+      imageUrl,
+      category,
+      isEasterEgg: hasEasterEgg || category === 'surprise'
     };
     
     setQuestions([...questions, newQuestion]);
     checkContributionStatus();
     
-    toast({
-      title: "Question Added",
-      description: "Your question has been added successfully!",
-    });
+    // Special Easter egg toast for certain categories
+    if (category === 'surprise' || hasEasterEgg) {
+      toast({
+        title: "✨ Special Question Added! ✨",
+        description: "Your magical question has been added with extra sparkle!",
+        variant: "default",
+      });
+    } else {
+      toast({
+        title: "Question Added",
+        description: "Your question has been added successfully!",
+      });
+    }
   };
 
   const addAnswer = (questionId: string, content: string) => {

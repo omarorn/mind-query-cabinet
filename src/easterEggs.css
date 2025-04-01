@@ -1,0 +1,82 @@
+
+/* Easter egg styles and animations */
+@keyframes sparkle {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.magic-mode-transition {
+  animation: background-flash 1s ease-in-out;
+}
+
+@keyframes background-flash {
+  0% { background-color: white; }
+  50% { background-color: #fcf4ff; }
+  100% { background-color: white; }
+}
+
+.easter-egg-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.easter-egg-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(45deg);
+  animation: sparkle-slide 3s infinite linear;
+  z-index: 1;
+}
+
+@keyframes sparkle-slide {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.surprise-text {
+  background: linear-gradient(90deg, #ff4d4d, #ffb83d, #fff83d, #5bff3d, #3dffcf, #3d76ff, #8c3dff, #ff3dcb);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: rainbow-text 5s linear infinite;
+}
+
+@keyframes rainbow-text {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* Secret Konami code styles */
+.konami-activated {
+  transform: rotateY(180deg);
+  transition: transform 1s ease;
+}
+
+/* Hidden firework animation for special events */
+@keyframes firework {
+  0% { transform: translate(-50%, 60vh); width: 4px; height: 4px; opacity: 1; }
+  50% { width: 4px; height: 4px; opacity: 1; }
+  100% { width: 300px; height: 300px; opacity: 0; }
+}
+
+.firework {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 0 4px rgba(255, 50, 50, 0.4),
+    0 0 0 8px rgba(255, 50, 50, 0.3),
+    0 0 0 12px rgba(255, 50, 50, 0.2);
+  animation: firework 0.8s ease-out;
+  animation-fill-mode: forwards;
+}
