@@ -7,7 +7,7 @@ import AnswerCard from "@/components/AnswerCard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { ThumbsUp, ThumbsDown, File, FileVideo, Link, ExternalLink } from "lucide-react";
+import { ThumbsUp, File, FileVideo, Link, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DualText from "@/components/DualText";
 import { useLanguage } from "@/context/LanguageContext";
@@ -54,7 +54,7 @@ const QuestionDetail = () => {
   }
   
   const questionAnswers = answers.filter(a => a.questionId === id)
-    .sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+    .sort((a, b) => b.upvotes - a.upvotes);
   
   const handleSubmitAnswer = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,9 +80,9 @@ const QuestionDetail = () => {
     setNewAnswer("");
   };
   
-  const handleVote = (voteType: 'up' | 'down') => {
+  const handleVote = () => {
     if (!user) return;
-    voteQuestion(question.id, voteType);
+    voteQuestion(question.id, 'up');
   };
   
   const formattedDate = new Date(question.createdAt).toLocaleDateString();
@@ -132,7 +132,7 @@ const QuestionDetail = () => {
           <div className="flex items-start gap-4">
             <div className="flex flex-col items-center space-y-1">
               <button
-                onClick={() => handleVote('up')}
+                onClick={handleVote}
                 disabled={!user}
                 className={cn(
                   "p-1 rounded hover:bg-gray-100 transition-colors", 
@@ -142,18 +142,8 @@ const QuestionDetail = () => {
                 <ThumbsUp size={20} />
               </button>
               <span className="text-lg font-medium">
-                {question.upvotes - question.downvotes}
+                {question.upvotes}
               </span>
-              <button
-                onClick={() => handleVote('down')}
-                disabled={!user}
-                className={cn(
-                  "p-1 rounded hover:bg-gray-100 transition-colors", 
-                  question.userVote === 'down' && "text-qa-secondary"
-                )}
-              >
-                <ThumbsDown size={20} />
-              </button>
             </div>
             
             <div className="flex-1">

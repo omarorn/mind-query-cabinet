@@ -12,8 +12,7 @@ export interface Question {
   authorId: string;
   authorName: string;
   upvotes: number;
-  downvotes: number;
-  userVote?: 'up' | 'down' | null;
+  userVote?: 'up' | null;
   userVoteDate?: string;
   attachment?: {
     type: 'file' | 'video' | 'link';
@@ -31,7 +30,6 @@ export interface Answer {
   authorId: string;
   authorName: string;
   upvotes: number;
-  downvotes: number;
-  userVote?: 'up' | 'down' | null;
+  userVote?: 'up' | null;
   userVoteDate?: string;
 }

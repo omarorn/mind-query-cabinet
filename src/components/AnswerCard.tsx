@@ -1,5 +1,5 @@
 
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 import { Answer } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -16,9 +16,9 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
   
   const formattedDate = new Date(answer.createdAt).toLocaleDateString();
   
-  const handleVote = (voteType: 'up' | 'down') => {
+  const handleVote = () => {
     if (!user) return;
-    voteAnswer(answer.id, voteType);
+    voteAnswer(answer.id, 'up');
   };
   
   return (
@@ -27,7 +27,7 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
         {hasContributed && (
           <div className="flex flex-col items-center space-y-1">
             <button
-              onClick={() => handleVote('up')}
+              onClick={handleVote}
               disabled={!user || (dailyVotesRemaining <= 0 && answer.userVote !== 'up')}
               className={cn(
                 "p-1 rounded hover:bg-gray-100 transition-colors", 
@@ -39,18 +39,8 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
               <ThumbsUp size={18} />
             </button>
             <span className="text-sm font-medium">
-              {answer.upvotes - answer.downvotes}
+              {answer.upvotes}
             </span>
-            <button
-              onClick={() => handleVote('down')}
-              disabled={!user}
-              className={cn(
-                "p-1 rounded hover:bg-gray-100 transition-colors", 
-                answer.userVote === 'down' && "text-qa-secondary"
-              )}
-            >
-              <ThumbsDown size={18} />
-            </button>
           </div>
         )}
         

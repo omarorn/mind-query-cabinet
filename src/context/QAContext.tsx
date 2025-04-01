@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Question, Answer, User } from '@/types/qa';
@@ -22,8 +23,8 @@ interface QAContextType {
     } | null
   ) => void;
   addAnswer: (questionId: string, content: string) => void;
-  voteQuestion: (questionId: string, voteType: 'up' | 'down') => void;
-  voteAnswer: (answerId: string, voteType: 'up' | 'down') => void;
+  voteQuestion: (questionId: string, voteType: 'up') => void;
+  voteAnswer: (answerId: string, voteType: 'up') => void;
   userQuestionCount: number;
   userAnswerCount: number;
 }
@@ -107,7 +108,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       authorId: user.id,
       authorName: user.name,
       upvotes: 0,
-      downvotes: 0,
       article: article,
       attachment: attachment || undefined
     };
@@ -131,8 +131,7 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       createdAt: new Date().toISOString(),
       authorId: user.id,
       authorName: user.name,
-      upvotes: 0,
-      downvotes: 0
+      upvotes: 0
     };
     
     setAnswers([...answers, newAnswer]);
@@ -144,58 +143,51 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     });
   };
 
-  const voteQuestion = (questionId: string, voteType: 'up' | 'down') => {
+  const voteQuestion = (questionId: string, voteType: 'up') => {
     if (!user) return;
     
     const question = questions.find(q => q.id === questionId);
     if (!question) return;
     
-    if (voteType === 'up') {
-      if (question.userVote === 'up') {
-        setQuestions(questions.map(q => {
-          if (q.id === questionId) {
-            return {
-              ...q,
-              upvotes: q.upvotes - 1,
-              userVote: null,
-              userVoteDate: undefined
-            };
-          }
-          return q;
-        }));
-        return;
-      }
-      
-      if (dailyVotes.count >= 5) {
-        toast({
-          title: t("voteLimit").en,
-          description: t("voteLimitDesc").en,
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setDailyVotes({
-        ...dailyVotes,
-        count: dailyVotes.count + 1
-      });
+    if (question.userVote === 'up') {
+      setQuestions(questions.map(q => {
+        if (q.id === questionId) {
+          return {
+            ...q,
+            upvotes: q.upvotes - 1,
+            userVote: null,
+            userVoteDate: undefined
+          };
+        }
+        return q;
+      }));
+      return;
     }
+    
+    if (dailyVotes.count >= 5) {
+      toast({
+        title: t("voteLimit").en,
+        description: t("voteLimitDesc").en,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setDailyVotes({
+      ...dailyVotes,
+      count: dailyVotes.count + 1
+    });
     
     setQuestions(questions.map(question => {
       if (question.id === questionId) {
         let newUpvotes = question.upvotes;
-        let newDownvotes = question.downvotes;
         
         if (question.userVote === 'up') newUpvotes--;
-        if (question.userVote === 'down') newDownvotes--;
-        
-        if (voteType === 'up') newUpvotes++;
-        if (voteType === 'down') newDownvotes++;
+        newUpvotes++;
         
         return {
           ...question,
           upvotes: newUpvotes,
-          downvotes: newDownvotes,
           userVote: question.userVote === voteType ? null : voteType,
           userVoteDate: new Date().toISOString()
         };
@@ -204,58 +196,51 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     }));
   };
 
-  const voteAnswer = (answerId: string, voteType: 'up' | 'down') => {
+  const voteAnswer = (answerId: string, voteType: 'up') => {
     if (!user) return;
     
     const answer = answers.find(a => a.id === answerId);
     if (!answer) return;
     
-    if (voteType === 'up') {
-      if (answer.userVote === 'up') {
-        setAnswers(answers.map(a => {
-          if (a.id === answerId) {
-            return {
-              ...a,
-              upvotes: a.upvotes - 1,
-              userVote: null,
-              userVoteDate: undefined
-            };
-          }
-          return a;
-        }));
-        return;
-      }
-      
-      if (dailyVotes.count >= 5) {
-        toast({
-          title: t("voteLimit").en,
-          description: t("voteLimitDesc").en,
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setDailyVotes({
-        ...dailyVotes,
-        count: dailyVotes.count + 1
-      });
+    if (answer.userVote === 'up') {
+      setAnswers(answers.map(a => {
+        if (a.id === answerId) {
+          return {
+            ...a,
+            upvotes: a.upvotes - 1,
+            userVote: null,
+            userVoteDate: undefined
+          };
+        }
+        return a;
+      }));
+      return;
     }
+    
+    if (dailyVotes.count >= 5) {
+      toast({
+        title: t("voteLimit").en,
+        description: t("voteLimitDesc").en,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setDailyVotes({
+      ...dailyVotes,
+      count: dailyVotes.count + 1
+    });
     
     setAnswers(answers.map(answer => {
       if (answer.id === answerId) {
         let newUpvotes = answer.upvotes;
-        let newDownvotes = answer.downvotes;
         
         if (answer.userVote === 'up') newUpvotes--;
-        if (answer.userVote === 'down') newDownvotes--;
-        
-        if (voteType === 'up') newUpvotes++;
-        if (voteType === 'down') newDownvotes++;
+        newUpvotes++;
         
         return {
           ...answer,
           upvotes: newUpvotes,
-          downvotes: newDownvotes,
           userVote: answer.userVote === voteType ? null : voteType,
           userVoteDate: new Date().toISOString()
         };

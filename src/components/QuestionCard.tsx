@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { ThumbsUp, ThumbsDown, File, FileVideo, Link as LinkIcon } from "lucide-react";
+import { ThumbsUp, File, FileVideo, Link as LinkIcon } from "lucide-react";
 import { Question } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -17,9 +17,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
   
   const formattedDate = new Date(question.createdAt).toLocaleDateString();
   
-  const handleVote = (voteType: 'up' | 'down') => {
+  const handleVote = () => {
     if (!user) return;
-    voteQuestion(question.id, voteType);
+    voteQuestion(question.id, 'up');
   };
   
   const renderAttachmentIcon = () => {
@@ -41,7 +41,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
         {hasContributed && (
           <div className="flex flex-col items-center space-y-1">
             <button
-              onClick={() => handleVote('up')}
+              onClick={handleVote}
               disabled={!user || (dailyVotesRemaining <= 0 && question.userVote !== 'up')}
               className={cn(
                 "p-1 rounded hover:bg-gray-100 transition-colors", 
@@ -53,18 +53,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
               <ThumbsUp size={18} />
             </button>
             <span className="text-sm font-medium">
-              {question.upvotes - question.downvotes}
+              {question.upvotes}
             </span>
-            <button
-              onClick={() => handleVote('down')}
-              disabled={!user}
-              className={cn(
-                "p-1 rounded hover:bg-gray-100 transition-colors", 
-                question.userVote === 'down' && "text-qa-secondary"
-              )}
-            >
-              <ThumbsDown size={18} />
-            </button>
           </div>
         )}
         
