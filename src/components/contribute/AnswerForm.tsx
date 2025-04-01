@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import DualText from '@/components/DualText';
@@ -28,6 +28,13 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
   onSubmit
 }) => {
   const { t } = useLanguage();
+  const [charCount, setCharCount] = useState(0);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    onAnswerChange(value);
+    setCharCount(value.length);
+  };
 
   return (
     <form onSubmit={onSubmit}>
@@ -64,11 +71,34 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
         <Textarea
           id="answerContent"
           value={answerContent}
-          onChange={(e) => onAnswerChange(e.target.value)}
+          onChange={handleTextChange}
           placeholder={t("yourAnswerPlaceholder").is}
           rows={5}
           required
         />
+        <div className="mt-2 flex justify-between text-sm text-gray-500">
+          <div>
+            <span className={charCount > 0 ? "font-medium" : ""}>
+              {charCount} {t("characters").is}
+            </span>
+          </div>
+          {charCount > 50 && (
+            <div>
+              <span className="font-medium text-amber-600">
+                {t("previewNote").is || "Fyrstu 50 stafir verða sýnilegir í forskoðun"}
+              </span>
+            </div>
+          )}
+        </div>
+        {answerContent && answerContent.length > 50 && (
+          <div className="mt-3 p-3 border rounded-md bg-gray-50">
+            <p className="text-sm font-medium text-gray-700">{t("preview").is || "Forskoðun"}:</p>
+            <p className="text-gray-600 mt-1">{answerContent.substring(0, 50)}...</p>
+            <span className="text-xs text-qa-primary mt-1 inline-block">
+              {t("clickToExpandPreview").is || "Smella til að skoða meira"}
+            </span>
+          </div>
+        )}
       </div>
       
       <Button type="submit" className="w-full">

@@ -1,10 +1,12 @@
 
 import { ThumbsUp } from "lucide-react";
+import { useState } from "react";
 import { Answer } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import DualText from "./DualText";
+import { Button } from "./ui/button";
 
 interface AnswerCardProps {
   answer: Answer;
@@ -13,6 +15,7 @@ interface AnswerCardProps {
 const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
   const { voteAnswer, user, hasContributed, dailyVotesRemaining } = useQA();
   const { t } = useLanguage();
+  const [expanded, setExpanded] = useState(false);
   
   const formattedDate = new Date(answer.createdAt).toLocaleDateString();
   
@@ -20,6 +23,9 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
     if (!user) return;
     voteAnswer(answer.id, 'up');
   };
+
+  // Display first 50 characters or full content based on expanded state
+  const displayContent = expanded ? answer.content : `${answer.content.substring(0, 50)}${answer.content.length > 50 ? '...' : ''}`;
   
   return (
     <div className="qa-card">
@@ -45,7 +51,18 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
         )}
         
         <div className="flex-1">
-          <p className="text-gray-700 mb-3">{answer.content}</p>
+          <p className="text-gray-700 mb-3">{displayContent}</p>
+          
+          {answer.content.length > 50 && (
+            <Button 
+              variant="link" 
+              className="p-0 h-auto text-qa-primary mb-2" 
+              onClick={() => setExpanded(!expanded)}
+            >
+              {expanded ? t("showLess").is : t("readMore").is}
+            </Button>
+          )}
+          
           <div className="text-sm text-gray-500">
             <div className="grid grid-cols-2 gap-2">
               <div>
