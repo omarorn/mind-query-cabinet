@@ -9,9 +9,10 @@ import DualText from "./DualText";
 
 interface QuestionCardProps {
   question: Question;
+  showContent?: boolean;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({ question, showContent = true }) => {
   const { voteQuestion, user, hasContributed, dailyVotesRemaining } = useQA();
   const { t } = useLanguage();
   
@@ -68,7 +69,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
             {renderAttachmentIcon()}
             {question.article && <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded">Article</span>}
           </div>
-          <p className="text-gray-600 line-clamp-2 mb-3">{question.content}</p>
+          {showContent && <p className="text-gray-600 line-clamp-2 mb-3">{question.content}</p>}
           <div className="flex justify-between items-center text-sm text-gray-500">
             <div>
               <div className="grid grid-cols-2 gap-2">
