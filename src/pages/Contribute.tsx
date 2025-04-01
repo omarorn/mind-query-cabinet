@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import AttachmentInput from "@/components/AttachmentInput";
+import DualText from "@/components/DualText";
 
 const Contribute = () => {
   const navigate = useNavigate();
@@ -28,6 +30,12 @@ const Contribute = () => {
   const [selectedQuestionId, setSelectedQuestionId] = useState("");
   const [answerContent, setAnswerContent] = useState("");
   const [activeTab, setActiveTab] = useState("question");
+  const [questionArticle, setQuestionArticle] = useState("");
+  const [questionAttachment, setQuestionAttachment] = useState<{
+    type: 'file' | 'video' | 'link';
+    url: string;
+    name?: string;
+  } | null>(null);
   
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,15 +55,23 @@ const Contribute = () => {
     if (!questionTitle.trim() || !questionContent.trim()) {
       toast({
         title: "Error",
-        description: "Please fill in all fields",
+        description: "Please fill in all required fields",
         variant: "destructive"
       });
       return;
     }
     
-    addQuestion(questionTitle.trim(), questionContent.trim());
+    addQuestion(
+      questionTitle.trim(), 
+      questionContent.trim(), 
+      questionArticle.trim() || undefined,
+      questionAttachment
+    );
+    
     setQuestionTitle("");
     setQuestionContent("");
+    setQuestionArticle("");
+    setQuestionAttachment(null);
     
     if (userQuestionCount + userAnswerCount + 1 >= 3) {
       navigate("/browse");
@@ -85,58 +101,70 @@ const Contribute = () => {
   return (
     <Layout>
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-qa-text">Contribute to Q&A Exchange</h1>
+        <h1 className="text-3xl font-bold mb-6 text-qa-text">
+          <DualText textKey="contributeTitle" className="block" />
+        </h1>
         
         {!user ? (
           <div className="qa-card">
-            <h2 className="text-xl font-semibold mb-4">Get Started</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              <DualText textKey="getStarted" />
+            </h2>
             <form onSubmit={handleCreateUser}>
               <div className="mb-4">
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Your Name
+                  <DualText textKey="yourName" />
                 </label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  placeholder={t("enterYourName").en}
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">Create Account</Button>
+              <Button type="submit" className="w-full">
+                <DualText textKey="createAccount" />
+              </Button>
             </form>
           </div>
         ) : (
           <>
             <div className="qa-card mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Your Contributions</h2>
+                <h2 className="text-xl font-semibold">
+                  <DualText textKey="yourContributions" />
+                </h2>
                 <div className="text-sm bg-qa-primary/10 text-qa-primary px-3 py-1 rounded-full">
-                  {userQuestionCount + userAnswerCount}/3 Required
+                  {userQuestionCount + userAnswerCount}/3 <DualText textKey="required" />
                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 p-4 border rounded-md bg-gray-50">
                   <div className="text-2xl font-bold text-qa-primary">{userQuestionCount}</div>
-                  <div className="text-gray-600">Questions</div>
+                  <DualText textKey="questions" className="text-gray-600" />
                 </div>
                 <div className="flex-1 p-4 border rounded-md bg-gray-50">
                   <div className="text-2xl font-bold text-qa-secondary">{userAnswerCount}</div>
-                  <div className="text-gray-600">Answers</div>
+                  <DualText textKey="answers" className="text-gray-600" />
                 </div>
                 <div className="flex-1 p-4 border rounded-md bg-gray-50">
                   <div className="text-2xl font-bold text-qa-accent">
-                    {hasContributed ? "Yes" : "Not Yet"}
+                    <DualText textKey={hasContributed ? "yes" : "notYet"} />
                   </div>
-                  <div className="text-gray-600">Full Access</div>
+                  <DualText textKey="fullAccess" className="text-gray-600" />
                 </div>
               </div>
               
               {hasContributed && (
                 <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-800">
-                  <p className="font-medium">Congratulations!</p>
-                  <p>You've contributed enough to gain full access to all Q&A content.</p>
+                  <p className="font-medium">
+                    <DualText textKey="congratulations" />
+                  </p>
+                  <p>
+                    <DualText textKey="contributionComplete" />
+                  </p>
                 </div>
               )}
             </div>
@@ -151,7 +179,7 @@ const Contribute = () => {
                   }`}
                   onClick={() => setActiveTab("question")}
                 >
-                  Ask a Question
+                  <DualText textKey="askQuestion" />
                 </button>
                 <button
                   className={`px-4 py-2 font-medium ${
@@ -161,7 +189,7 @@ const Contribute = () => {
                   }`}
                   onClick={() => setActiveTab("answer")}
                 >
-                  Answer a Question
+                  <DualText textKey="answerQuestion" />
                 </button>
               </div>
               
@@ -169,38 +197,65 @@ const Contribute = () => {
                 <form onSubmit={handleAddQuestion}>
                   <div className="mb-4">
                     <label htmlFor="questionTitle" className="block text-sm font-medium text-gray-700 mb-1">
-                      Question Title
+                      <DualText textKey="questionTitle" />
                     </label>
                     <Input
                       id="questionTitle"
                       value={questionTitle}
                       onChange={(e) => setQuestionTitle(e.target.value)}
-                      placeholder="e.g. How do I improve my programming skills?"
+                      placeholder={t("questionTitlePlaceholder").en}
                       required
                     />
                   </div>
                   
                   <div className="mb-4">
                     <label htmlFor="questionContent" className="block text-sm font-medium text-gray-700 mb-1">
-                      Question Details
+                      <DualText textKey="questionDetails" />
                     </label>
                     <Textarea
                       id="questionContent"
                       value={questionContent}
                       onChange={(e) => setQuestionContent(e.target.value)}
-                      placeholder="Provide more details about your question..."
+                      placeholder={t("questionDetailsPlaceholder").en}
                       rows={5}
                       required
                     />
                   </div>
                   
-                  <Button type="submit" className="w-full">Submit Question</Button>
+                  <div className="mb-4">
+                    <label htmlFor="questionArticle" className="block text-sm font-medium text-gray-700 mb-1">
+                      <DualText textKey="articleFacts" />
+                    </label>
+                    <Textarea
+                      id="questionArticle"
+                      value={questionArticle}
+                      onChange={(e) => setQuestionArticle(e.target.value)}
+                      placeholder={t("articleFactsPlaceholder").en}
+                      rows={3}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      <DualText textKey="articleFactsHelp" />
+                    </p>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <DualText textKey="attachments" />
+                    </label>
+                    <AttachmentInput 
+                      onAttachmentChange={setQuestionAttachment} 
+                    />
+                  </div>
+                  
+                  <Button type="submit" className="w-full">
+                    <DualText textKey="submitQuestion" />
+                  </Button>
                 </form>
               ) : (
                 <form onSubmit={handleAddAnswer}>
                   <div className="mb-4">
                     <label htmlFor="questionSelect" className="block text-sm font-medium text-gray-700 mb-1">
-                      Select a Question
+                      <DualText textKey="selectQuestion" />
                     </label>
                     <select
                       id="questionSelect"
@@ -209,7 +264,7 @@ const Contribute = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-qa-primary"
                       required
                     >
-                      <option value="">Select a question to answer</option>
+                      <option value="">{t("selectQuestionPlaceholder").en}</option>
                       {questions.map(question => (
                         <option key={question.id} value={question.id}>
                           {question.title}
@@ -220,19 +275,21 @@ const Contribute = () => {
                   
                   <div className="mb-4">
                     <label htmlFor="answerContent" className="block text-sm font-medium text-gray-700 mb-1">
-                      Your Answer
+                      <DualText textKey="yourAnswer" />
                     </label>
                     <Textarea
                       id="answerContent"
                       value={answerContent}
                       onChange={(e) => setAnswerContent(e.target.value)}
-                      placeholder="Write your answer here..."
+                      placeholder={t("yourAnswerPlaceholder").en}
                       rows={5}
                       required
                     />
                   </div>
                   
-                  <Button type="submit" className="w-full">Submit Answer</Button>
+                  <Button type="submit" className="w-full">
+                    <DualText textKey="submitAnswer" />
+                  </Button>
                 </form>
               )}
             </div>

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Question, Answer, User } from '@/types/qa';
@@ -10,7 +9,16 @@ interface QAContextType {
   answers: Answer[];
   hasContributed: boolean;
   createUser: (name: string) => void;
-  addQuestion: (title: string, content: string) => void;
+  addQuestion: (
+    title: string, 
+    content: string, 
+    article?: string,
+    attachment?: {
+      type: 'file' | 'video' | 'link';
+      url: string;
+      name?: string;
+    } | null
+  ) => void;
   addAnswer: (questionId: string, content: string) => void;
   voteQuestion: (questionId: string, voteType: 'up' | 'down') => void;
   voteAnswer: (answerId: string, voteType: 'up' | 'down') => void;
@@ -26,7 +34,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [hasContributed, setHasContributed] = useState(false);
 
-  // Load data from localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('qa-user');
     const storedQuestions = localStorage.getItem('qa-questions');
@@ -39,7 +46,6 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     if (storedContributed) setHasContributed(JSON.parse(storedContributed));
   }, []);
 
-  // Save data to localStorage when it changes
   useEffect(() => {
     if (user) localStorage.setItem('qa-user', JSON.stringify(user));
     if (questions.length) localStorage.setItem('qa-questions', JSON.stringify(questions));
@@ -59,7 +65,16 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     });
   };
 
-  const addQuestion = (title: string, content: string) => {
+  const addQuestion = (
+    title: string, 
+    content: string, 
+    article?: string,
+    attachment?: {
+      type: 'file' | 'video' | 'link';
+      url: string;
+      name?: string;
+    } | null
+  ) => {
     if (!user) return;
     
     const newQuestion: Question = {
@@ -70,7 +85,9 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       authorId: user.id,
       authorName: user.name,
       upvotes: 0,
-      downvotes: 0
+      downvotes: 0,
+      article: article,
+      attachment: attachment || undefined
     };
     
     setQuestions([...questions, newQuestion]);
@@ -110,14 +127,12 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     
     setQuestions(questions.map(question => {
       if (question.id === questionId) {
-        // Remove previous vote if it exists
         let newUpvotes = question.upvotes;
         let newDownvotes = question.downvotes;
         
         if (question.userVote === 'up') newUpvotes--;
         if (question.userVote === 'down') newDownvotes--;
         
-        // Add new vote
         if (voteType === 'up') newUpvotes++;
         if (voteType === 'down') newDownvotes++;
         
@@ -137,14 +152,12 @@ export const QAProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     
     setAnswers(answers.map(answer => {
       if (answer.id === answerId) {
-        // Remove previous vote if it exists
         let newUpvotes = answer.upvotes;
         let newDownvotes = answer.downvotes;
         
         if (answer.userVote === 'up') newUpvotes--;
         if (answer.userVote === 'down') newDownvotes--;
         
-        // Add new vote
         if (voteType === 'up') newUpvotes++;
         if (voteType === 'down') newDownvotes++;
         

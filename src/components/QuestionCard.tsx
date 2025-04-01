@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown, File, FileVideo, Link as LinkIcon } from "lucide-react";
 import { Question } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -20,6 +20,19 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
   const handleVote = (voteType: 'up' | 'down') => {
     if (!user) return;
     voteQuestion(question.id, voteType);
+  };
+  
+  const renderAttachmentIcon = () => {
+    if (!question.attachment) return null;
+    
+    switch (question.attachment.type) {
+      case 'file':
+        return <File className="h-4 w-4 text-blue-500" />;
+      case 'video':
+        return <FileVideo className="h-4 w-4 text-red-500" />;
+      case 'link':
+        return <LinkIcon className="h-4 w-4 text-green-500" />;
+    }
   };
   
   return (
@@ -54,11 +67,15 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
         )}
         
         <div className="flex-1">
-          <h3 className="text-xl font-semibold mb-2">
-            <Link to={`/question/${question.id}`} className="hover:text-qa-primary">
-              {question.title}
-            </Link>
-          </h3>
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-xl font-semibold">
+              <Link to={`/question/${question.id}`} className="hover:text-qa-primary">
+                {question.title}
+              </Link>
+            </h3>
+            {renderAttachmentIcon()}
+            {question.article && <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded">Article</span>}
+          </div>
           <p className="text-gray-600 line-clamp-2 mb-3">{question.content}</p>
           <div className="flex justify-between items-center text-sm text-gray-500">
             <div>

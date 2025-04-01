@@ -14,6 +14,12 @@ export interface Question {
   upvotes: number;
   downvotes: number;
   userVote?: 'up' | 'down' | null;
+  attachment?: {
+    type: 'file' | 'video' | 'link';
+    url: string;
+    name?: string;
+  };
+  article?: string;
 }
 
 export interface Answer {
