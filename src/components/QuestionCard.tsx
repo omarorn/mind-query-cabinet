@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Question } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
+import DualText from "./DualText";
 
 interface QuestionCardProps {
   question: Question;
@@ -11,6 +13,7 @@ interface QuestionCardProps {
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
   const { voteQuestion, user, hasContributed } = useQA();
+  const { t } = useLanguage();
   
   const formattedDate = new Date(question.createdAt).toLocaleDateString();
   
@@ -59,10 +62,17 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
           <p className="text-gray-600 line-clamp-2 mb-3">{question.content}</p>
           <div className="flex justify-between items-center text-sm text-gray-500">
             <div>
-              Asked by <span className="font-medium">{question.authorName}</span> on {formattedDate}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  {t("askedBy").en} <span className="font-medium">{question.authorName}</span> {t("on").en} {formattedDate}
+                </div>
+                <div>
+                  {t("askedBy").is} <span className="font-medium">{question.authorName}</span> {t("on").is} {formattedDate}
+                </div>
+              </div>
             </div>
             <Link to={`/question/${question.id}`} className="text-qa-primary hover:underline">
-              View Details
+              <DualText textKey="viewDetails" />
             </Link>
           </div>
         </div>

@@ -2,7 +2,9 @@
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { Answer } from "@/types/qa";
 import { useQA } from "@/context/QAContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
+import DualText from "./DualText";
 
 interface AnswerCardProps {
   answer: Answer;
@@ -10,6 +12,7 @@ interface AnswerCardProps {
 
 const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
   const { voteAnswer, user, hasContributed } = useQA();
+  const { t } = useLanguage();
   
   const formattedDate = new Date(answer.createdAt).toLocaleDateString();
   
@@ -52,7 +55,14 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
         <div className="flex-1">
           <p className="text-gray-700 mb-3">{answer.content}</p>
           <div className="text-sm text-gray-500">
-            Answered by <span className="font-medium">{answer.authorName}</span> on {formattedDate}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                {t("answeredBy").en} <span className="font-medium">{answer.authorName}</span> {t("on").en} {formattedDate}
+              </div>
+              <div>
+                {t("answeredBy").is} <span className="font-medium">{answer.authorName}</span> {t("on").is} {formattedDate}
+              </div>
+            </div>
           </div>
         </div>
       </div>

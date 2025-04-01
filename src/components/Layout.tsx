@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useQA } from "@/context/QAContext";
+import DualText from "./DualText";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,14 +16,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <Link to="/" className="text-2xl font-bold text-qa-primary">
-              Q&A Exchange
+              <DualText textKey="appTitle" />
             </Link>
             <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/" className="hover:text-qa-primary">Home</Link>
+              <Link to="/" className="hover:text-qa-primary">
+                <DualText textKey="home" />
+              </Link>
               {hasContributed && (
-                <Link to="/browse" className="hover:text-qa-primary">Browse Q&A</Link>
+                <Link to="/browse" className="hover:text-qa-primary">
+                  <DualText textKey="browse" />
+                </Link>
               )}
-              <Link to="/contribute" className="hover:text-qa-primary">Contribute</Link>
+              <Link to="/contribute" className="hover:text-qa-primary">
+                <DualText textKey="contribute" />
+              </Link>
             </nav>
             <div className="flex items-center">
               {user ? (
@@ -42,17 +49,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   to="/contribute"
                   className="qa-button"
                 >
-                  Get Started
+                  <DualText textKey="getStarted" />
                 </Link>
               )}
             </div>
           </div>
           <nav className="md:hidden mt-4 flex items-center space-x-4">
-            <Link to="/" className="hover:text-qa-primary">Home</Link>
+            <Link to="/" className="hover:text-qa-primary">
+              <DualText textKey="home" />
+            </Link>
             {hasContributed && (
-              <Link to="/browse" className="hover:text-qa-primary">Browse Q&A</Link>
+              <Link to="/browse" className="hover:text-qa-primary">
+                <DualText textKey="browse" />
+              </Link>
             )}
-            <Link to="/contribute" className="hover:text-qa-primary">Contribute</Link>
+            <Link to="/contribute" className="hover:text-qa-primary">
+              <DualText textKey="contribute" />
+            </Link>
           </nav>
         </div>
       </header>
