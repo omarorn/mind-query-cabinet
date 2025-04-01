@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import DualText from "./DualText";
 import { Button } from "./ui/button";
+import SpeechButton from "./SpeechButton";
 
 interface AnswerCardProps {
   answer: Answer;
@@ -93,6 +94,9 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
                 {showKidsVersion ? "Hide Kids Version" : "Show Kids Version"}
               </Button>
             )}
+            
+            {/* Add Speech button */}
+            <SpeechButton text={answer.content} />
           </div>
           
           {showFactCheck && answer.factCheck && (
