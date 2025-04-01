@@ -36,6 +36,11 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
     setCharCount(value.length);
   };
 
+  // Generate punchline preview
+  const punchlinePreview = answerContent.length > 50 
+    ? `${answerContent.substring(0, 50)}...` 
+    : answerContent;
+
   return (
     <form onSubmit={onSubmit}>
       <div className="mb-4">
@@ -90,13 +95,15 @@ const AnswerForm: React.FC<AnswerFormProps> = ({
             </div>
           )}
         </div>
-        {answerContent && answerContent.length > 50 && (
+        {answerContent && (
           <div className="mt-3 p-3 border rounded-md bg-gray-50">
-            <p className="text-sm font-medium text-gray-700">{t("preview").is || "Forskoðun"}:</p>
-            <p className="text-gray-600 mt-1">{answerContent.substring(0, 50)}...</p>
-            <span className="text-xs text-qa-primary mt-1 inline-block">
-              {t("clickToExpandPreview").is || "Smella til að skoða meira"}
-            </span>
+            <p className="text-sm font-medium text-gray-700">{t("punchlinePreview").is || "Forskoðun á stuttu svari"}:</p>
+            <p className="text-gray-600 mt-1">{punchlinePreview}</p>
+            {answerContent.length > 50 && (
+              <span className="text-xs text-qa-primary mt-1 inline-block">
+                {t("clickToExpandPreview").is || "Smella til að skoða meira"}
+              </span>
+            )}
           </div>
         )}
       </div>

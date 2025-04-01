@@ -24,8 +24,12 @@ const AnswerCard: React.FC<AnswerCardProps> = ({ answer }) => {
     voteAnswer(answer.id, 'up');
   };
 
-  // Display first 50 characters or full content based on expanded state
-  const displayContent = expanded ? answer.content : `${answer.content.substring(0, 50)}${answer.content.length > 50 ? '...' : ''}`;
+  // Use punchline if available, otherwise generate one from content
+  const punchline = answer.punchline || 
+    (answer.content.length > 50 ? `${answer.content.substring(0, 50)}...` : answer.content);
+  
+  // Display punchline or full content based on expanded state
+  const displayContent = expanded ? answer.content : punchline;
   
   return (
     <div className="qa-card">

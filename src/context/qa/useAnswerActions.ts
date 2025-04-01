@@ -21,10 +21,16 @@ export const useAnswerActions = ({
   const addAnswer = (questionId: string, content: string) => {
     if (!user) return;
     
+    // Generate punchline for the answer
+    const punchline = content.length > 50 
+      ? `${content.substring(0, 50)}...` 
+      : content;
+    
     const newAnswer: Answer = {
       id: uuidv4(),
       questionId,
       content,
+      punchline,
       createdAt: new Date().toISOString(),
       authorId: user.id,
       authorName: user.name,
