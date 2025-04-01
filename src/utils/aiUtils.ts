@@ -11,8 +11,16 @@ interface GeminiResponse {
 
 export const generateQuestionWithAI = async (prompt: string = "Generate an interesting question for a Q&A platform"): Promise<{ title: string; content: string } | null> => {
   try {
+    // Check if the API key is available
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      console.error('Gemini API key is missing');
+      throw new Error('API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.');
+    }
+    
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -27,7 +35,9 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
     );
 
     if (!response.ok) {
-      throw new Error(`API call failed: ${response.status}`);
+      const errorData = await response.json();
+      console.error('Gemini API error:', errorData);
+      throw new Error(`API call failed: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data: GeminiResponse = await response.json();
@@ -57,13 +67,21 @@ export const generateQuestionWithAI = async (prompt: string = "Generate an inter
 
 export const generateAnswerWithAI = async (questionTitle: string, questionContent: string): Promise<string | null> => {
   try {
+    // Check if the API key is available
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    
+    if (!apiKey) {
+      console.error('Gemini API key is missing');
+      throw new Error('API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.');
+    }
+    
     const prompt = `Generate a witty, insightful answer to this question. Be creative but informative.
     
 Question title: ${questionTitle}
 Question content: ${questionContent}`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -78,7 +96,9 @@ Question content: ${questionContent}`;
     );
 
     if (!response.ok) {
-      throw new Error(`API call failed: ${response.status}`);
+      const errorData = await response.json();
+      console.error('Gemini API error:', errorData);
+      throw new Error(`API call failed: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data: GeminiResponse = await response.json();

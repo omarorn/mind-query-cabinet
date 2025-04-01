@@ -5,6 +5,7 @@ import { Loader2, Sparkles, Laugh } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { generateQuestionWithAI } from "@/utils/aiUtils";
 import { useQA } from "@/context/QAContext";
+import { useLanguage } from "@/context/LanguageContext";
 import DualText from "./DualText";
 
 interface AIQuestionButtonProps {

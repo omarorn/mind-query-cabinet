@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useQA } from "@/context/QAContext";
 import { useToast } from "@/components/ui/use-toast";
+import { useLanguage } from "@/context/LanguageContext";
 import MagicButton from "@/components/MagicButton";
 import UserCreationForm from "@/components/contribute/UserCreationForm";
 import ContributionStats from "@/components/contribute/ContributionStats";
@@ -13,6 +14,7 @@ import { generateAnswerWithAI } from "@/utils/aiUtils";
 const Contribute = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const { 
     user, 
     createUser, 
@@ -131,8 +133,8 @@ const Contribute = () => {
       <div className="max-w-3xl mx-auto relative">
         <h1 className="text-3xl font-bold mb-6 text-qa-text">
           <div className="grid grid-cols-2 gap-2 block">
-            <div className="text-left">{useQA().t("contributeTitle").en}</div>
-            <div className="text-left">{useQA().t("contributeTitle").is}</div>
+            <div className="text-left">{t("contributeTitle").en}</div>
+            <div className="text-left">{t("contributeTitle").is}</div>
           </div>
         </h1>
         
