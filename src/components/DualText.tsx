@@ -16,11 +16,7 @@ const DualText: React.FC<DualTextProps> = ({ textKey, fallback, className = '' }
   const icelandicText = translations.is === textKey && fallback ? fallback : translations.is;
 
   // Only show Icelandic text
-  return (
-    <span className={className}>
-      {icelandicText}
-    </span>
-  );
+  return <span className={className}>{icelandicText}</span>;
 };
 
 export default DualText;

@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useQA } from "@/context/QAContext";
@@ -15,33 +16,33 @@ const Index = () => {
     <Layout>
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-qa-text">Welcome to Q&A Exchange</h1>
+          <h1 className="text-4xl font-bold mb-4 text-qa-text">Velkomin á Spurninga og Svara vefinn</h1>
           <p className="text-xl text-gray-600 mb-8">
-            Contribute 3 questions or answers to unlock full access to our knowledge base.
+            Leggðu til 3 spurningar eða svör til að fá fullan aðgang að þekkingargrunninum.
           </p>
           <Link to="/contribute" className="qa-button">
-            Start Contributing
+            Byrja að leggja til
           </Link>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="qa-card">
-            <h2 className="text-2xl font-semibold mb-4 text-qa-primary">How It Works</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-qa-primary">Hvernig virkar þetta?</h2>
             <ol className="space-y-4 list-decimal list-inside text-gray-700">
-              <li>Create an account with your name</li>
-              <li>Contribute 3 questions or answers</li>
-              <li>Gain full access to all content</li>
-              <li>Vote on the best questions and answers</li>
+              <li>Búðu til aðgang með nafninu þínu</li>
+              <li>Leggðu til 3 spurningar eða svör</li>
+              <li>Fáðu fullan aðgang að öllu efni</li>
+              <li>Kjóstu bestu spurningarnar og svörin</li>
             </ol>
           </div>
           
           <div className="qa-card">
-            <h2 className="text-2xl font-semibold mb-4 text-qa-secondary">Why Contribute?</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-qa-secondary">Af hverju að taka þátt?</h2>
             <ul className="space-y-4 list-disc list-inside text-gray-700">
-              <li>Share your knowledge with others</li>
-              <li>Help build a valuable resource</li>
-              <li>Learn from a diverse community</li>
-              <li>Earn recognition for quality content</li>
+              <li>Deildu þekkingu þinni með öðrum</li>
+              <li>Hjálpaðu við að byggja upp verðmætan þekkingargrunn</li>
+              <li>Lærðu frá fjölbreyttu samfélagi</li>
+              <li>Fáðu viðurkenningu fyrir gæðaefni</li>
             </ul>
           </div>
         </div>
@@ -49,10 +50,10 @@ const Index = () => {
         {topQuestions.length > 0 && (
           <div className="mb-12">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold">Top Questions</h2>
+              <h2 className="text-2xl font-semibold">Vinsælustu spurningarnar</h2>
               {hasContributed && (
                 <Link to="/browse" className="text-qa-primary hover:underline">
-                  View All Questions
+                  Skoða allar spurningar
                 </Link>
               )}
             </div>
@@ -66,10 +67,10 @@ const Index = () => {
             {!hasContributed && (
               <div className="mt-6 text-center">
                 <p className="text-gray-600 mb-4">
-                  Want to see more questions? Contribute to unlock all content!
+                  Viltu sjá fleiri spurningar? Leggðu til til að opna fyrir allt efnið!
                 </p>
                 <Link to="/contribute" className="qa-button">
-                  Contribute Now
+                  Leggja til núna
                 </Link>
               </div>
             )}

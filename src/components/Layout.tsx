@@ -16,7 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <Link to="/" className="text-2xl font-bold text-qa-primary">
-              <DualText textKey="appTitle" />
+              <DualText textKey="appTitle" fallback="Spurninga og Svara Vefurinn" />
             </Link>
             <nav className="hidden md:flex items-center space-x-6">
               <Link to="/" className="hover:text-qa-primary">
@@ -37,7 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <div className="hidden md:block text-sm text-gray-500">
                     <span className="font-medium text-qa-text">{user.name}</span>
                     <div className="text-xs">
-                      Questions: {userQuestionCount}, Answers: {userAnswerCount}
+                      Spurningar: {userQuestionCount}, Svör: {userAnswerCount}
                     </div>
                   </div>
                   <span className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full bg-qa-primary text-white flex items-center justify-center font-semibold">
@@ -77,7 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer className="bg-white border-t py-6">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} Q&A Exchange - Where knowledge sharing begins with contribution.
+            &copy; {new Date().getFullYear()} Spurningar og Svör - Þekkingarsköpun byrjar með þátttöku.
           </p>
         </div>
       </footer>

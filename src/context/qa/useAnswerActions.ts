@@ -35,8 +35,8 @@ export const useAnswerActions = ({
     const isNowContributed = checkContributionStatus();
     
     toast({
-      title: "Answer Added",
-      description: "Your answer has been added successfully!",
+      title: "Svar bætt við",
+      description: "Svarið þitt hefur verið bætt við!",
     });
   };
 
