@@ -36,6 +36,8 @@ export const generateQuestionWithAI = async (prompt: string = "Búðu til áhuga
       
       Hafðu titilinn stuttan og hnitmiðaðan. Spurningin ætti að vera ítarlegri.`;
     
+    console.log("Sending prompt to Gemini:", icelandicPrompt);
+    
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
@@ -72,66 +74,102 @@ export const generateQuestionWithAI = async (prompt: string = "Búðu til áhuga
     let source = "";
     let imageUrl = "";
     
-    // Better parsing with clear section detection
-    const lines = generatedText.split('\n').map(line => line.trim()).filter(line => line);
-    let currentSection = "";
+    // Improved parsing with more robust section detection
+    const sections = generatedText.split(/\n\s*\n/); // Split by empty lines
     
-    for (const line of lines) {
-      const lowerLine = line.toLowerCase();
+    for (const section of sections) {
+      const lines = section.split('\n').map(line => line.trim()).filter(line => line);
       
-      if (lowerLine.startsWith('titill:')) {
-        currentSection = "title";
-        title = line.substring(line.indexOf(':') + 1).trim();
-      } 
-      else if (lowerLine.startsWith('spurning:')) {
-        currentSection = "content";
-        content = line.substring(line.indexOf(':') + 1).trim();
-      } 
-      else if (lowerLine.startsWith('heimild:') || lowerLine.startsWith('link:') || lowerLine.startsWith('tengill:')) {
-        currentSection = "source";
-        source = line.substring(line.indexOf(':') + 1).trim();
-      } 
-      else if (lowerLine.startsWith('mynd:') || lowerLine.startsWith('picture:') || lowerLine.startsWith('image:')) {
-        currentSection = "image";
-        imageUrl = line.substring(line.indexOf(':') + 1).trim();
-      } 
-      else {
-        // Append to the current section
-        if (currentSection === "title") {
-          title += " " + line;
-        } else if (currentSection === "content") {
-          content += "\n" + line;
-        } else if (currentSection === "source") {
-          source += " " + line;
-        } else if (currentSection === "image") {
-          imageUrl += " " + line;
-        }
+      for (const line of lines) {
+        const lowerLine = line.toLowerCase();
+        
+        if (lowerLine.match(/^titill:?\s/i)) {
+          title = line.replace(/^titill:?\s/i, "").trim();
+        } 
+        else if (lowerLine.match(/^spurning:?\s/i)) {
+          content = line.replace(/^spurning:?\s/i, "").trim();
+          // Collect additional lines for content if they don't match other section headers
+          let i = lines.indexOf(line) + 1;
+          while (i < lines.length && 
+                !lines[i].toLowerCase().match(/^(titill|heimild|mynd|source|image|link|tengill):?\s/i)) {
+            content += "\n" + lines[i];
+            i++;
+          }
+        } 
+        else if (lowerLine.match(/^(heimild|source|link|tengill):?\s/i)) {
+          source = line.replace(/^(heimild|source|link|tengill):?\s/i, "").trim();
+        } 
+        else if (lowerLine.match(/^(mynd|picture|image):?\s/i)) {
+          imageUrl = line.replace(/^(mynd|picture|image):?\s/i, "").trim();
+          // Clean up common formatting issues in image URLs
+          imageUrl = imageUrl.replace(/["\[\]]/g, "").trim();
+        } 
       }
     }
     
-    // If no clear sections were detected, try a fallback approach
-    if (!title && !content) {
+    // If parsing fails, try to extract content intelligently
+    if (!title || !content) {
       console.log("Using fallback parsing for AI response");
       
-      // Look for the first bold text as title
-      const boldMatch = generatedText.match(/\*\*(.*?)\*\*/);
-      if (boldMatch) {
-        title = boldMatch[1].trim();
-        content = generatedText.replace(/\*\*.*?\*\*/, "").trim();
-      } else {
-        // Just take the first line as title and the rest as content
-        const allLines = generatedText.split('\n').filter(line => line.trim());
-        if (allLines.length > 0) {
-          title = allLines[0].trim();
-          content = allLines.slice(1).join('\n').trim();
+      // Look for the first line as title if not found
+      if (!title) {
+        const firstLine = generatedText.split('\n')[0].trim();
+        if (firstLine && !firstLine.toLowerCase().includes("titill:")) {
+          title = firstLine;
+        } else {
+          // Extract anything after "titill:" in the text if present
+          const titleMatch = generatedText.match(/titill:?\s*(.*?)(?:\n|$)/i);
+          if (titleMatch && titleMatch[1]) {
+            title = titleMatch[1].trim();
+          }
+        }
+      }
+      
+      // If still no title, use a generic one
+      if (!title) {
+        title = "Spurning frá gervigreind";
+      }
+      
+      // For content, take everything except the first line if we used it as title
+      if (!content) {
+        if (title !== generatedText.split('\n')[0].trim()) {
+          content = generatedText;
+        } else {
+          content = generatedText.split('\n').slice(1).join('\n').trim();
+        }
+        
+        // If content still contains "Titill:", remove that section
+        if (content.match(/titill:?\s/i)) {
+          content = content.replace(/titill:?\s.*?(\n|$)/i, "").trim();
         }
       }
     }
     
-    // Default image if none is provided
-    if (!imageUrl || imageUrl.length < 5) {
-      imageUrl = 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3';
+    // Try to extract source if not already found
+    if (!source) {
+      const sourceMatch = generatedText.match(/(?:heimild|source|link|tengill):?\s*(.*?)(?:\n|$)/i);
+      if (sourceMatch && sourceMatch[1]) {
+        source = sourceMatch[1].trim();
+      }
     }
+    
+    // Try to extract image URL if not already found
+    if (!imageUrl || imageUrl.length < 5) {
+      const imageMatch = generatedText.match(/(?:mynd|picture|image):?\s*(.*?)(?:\n|$)/i);
+      if (imageMatch && imageMatch[1]) {
+        imageUrl = imageMatch[1].trim().replace(/["\[\]]/g, "");
+      } else {
+        // Default image if none is provided
+        imageUrl = 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3';
+      }
+    }
+    
+    console.log("Parsed AI response:", {
+      title: title || "No title parsed",
+      content: content || "No content parsed",
+      source: source || "No source parsed",
+      imageUrl: imageUrl || "No image parsed"
+    });
     
     return { 
       title: title.trim() || "Spurning frá gervigreind", 
@@ -159,6 +197,8 @@ export const generateAnswerWithAI = async (questionTitle: string, questionConten
     
 Titill spurningar: ${questionTitle}
 Efni spurningar: ${questionContent}`;
+
+    console.log("Sending answer prompt to Gemini:", prompt);
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
@@ -188,9 +228,11 @@ Efni spurningar: ${questionContent}`;
     }
     
     const generatedText = data.candidates[0].content.parts[0].text;
+    console.log("Generated AI answer:", generatedText);
     return generatedText.trim();
   } catch (error) {
     console.error('Villa við að búa til svar með gervigreind:', error);
     return null;
   }
 };
+

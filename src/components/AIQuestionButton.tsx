@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, Laugh } from "lucide-react";
@@ -7,6 +6,7 @@ import { generateQuestionWithAI } from "@/utils/aiUtils";
 import { useQA } from "@/context/QAContext";
 import { useLanguage } from "@/context/LanguageContext";
 import DualText from "./DualText";
+import { motion } from "framer-motion";
 
 interface AIQuestionButtonProps {
   onQuestionGenerated?: (title: string, content: string, source?: string, imageUrl?: string) => void;
@@ -51,7 +51,9 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
         onQuestionGenerated(title, content, source, imageUrl);
       } else {
         // Otherwise add directly
-        addQuestion(title, content, undefined, null, source, imageUrl);
+        // For magic mode, we set the category to 'surprise'
+        const category = magicMode ? 'surprise' : undefined;
+        addQuestion(title, content, undefined, null, source, imageUrl, category);
       }
       
       toast({
@@ -61,6 +63,7 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
           : "Gervigreindar spurning búin til!",
       });
     } catch (error) {
+      console.error('Error generating question:', error);
       toast({
         title: "Villa",
         description: "Mistókst að búa til spurningu með gervigreind",
@@ -71,30 +74,49 @@ const AIQuestionButton: React.FC<AIQuestionButtonProps> = ({
     }
   };
 
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.03,
+      transition: { duration: 0.2 }
+    },
+    tap: { 
+      scale: 0.97,
+      transition: { duration: 0.1 }
+    }
+  };
+
   return (
-    <Button
-      onClick={handleGenerateQuestion}
-      disabled={isLoading || !user}
-      className={`w-full ${magicMode 
-        ? "bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600" 
-        : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"}`}
+    <motion.div
+      initial="initial"
+      whileHover="hover"
+      whileTap="tap"
+      variants={buttonVariants}
     >
-      {isLoading ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          <DualText textKey="generating" />
-        </>
-      ) : (
-        <>
-          {magicMode ? (
-            <Laugh className="mr-2 h-4 w-4" />
-          ) : (
-            <Sparkles className="mr-2 h-4 w-4" />
-          )}
-          <DualText textKey={magicMode ? "magicQuestion" : "generateAIQuestion"} />
-        </>
-      )}
-    </Button>
+      <Button
+        onClick={handleGenerateQuestion}
+        disabled={isLoading || !user}
+        className={`w-full ${magicMode 
+          ? "bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600" 
+          : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"}`}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <DualText textKey="generating" />
+          </>
+        ) : (
+          <>
+            {magicMode ? (
+              <Laugh className="mr-2 h-4 w-4" />
+            ) : (
+              <Sparkles className="mr-2 h-4 w-4" />
+            )}
+            <DualText textKey={magicMode ? "magicQuestion" : "generateAIQuestion"} />
+          </>
+        )}
+      </Button>
+    </motion.div>
   );
 };
 
