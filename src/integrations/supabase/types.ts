@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ai_service_logs: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          prompt: string
+          response: string | null
+          service: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          prompt: string
+          response?: string | null
+          service: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          prompt?: string
+          response?: string | null
+          service?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       bORING: {
         Row: {
           Value: string[] | null
@@ -18,6 +51,116 @@ export type Database = {
         }
         Update: {
           Value?: string[] | null
+        }
+        Relationships: []
+      }
+      bus_locations: {
+        Row: {
+          bus_id: string
+          heading: number | null
+          id: number
+          latitude: number
+          longitude: number
+          route_id: number | null
+          route_number: string
+          speed: number | null
+          timestamp: string
+          updated_at: string
+        }
+        Insert: {
+          bus_id: string
+          heading?: number | null
+          id?: number
+          latitude: number
+          longitude: number
+          route_id?: number | null
+          route_number: string
+          speed?: number | null
+          timestamp?: string
+          updated_at?: string
+        }
+        Update: {
+          bus_id?: string
+          heading?: number | null
+          id?: number
+          latitude?: number
+          longitude?: number
+          route_id?: number | null
+          route_number?: string
+          speed?: number | null
+          timestamp?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bus_locations_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "bus_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bus_routes: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: number
+          name: string
+          route_number: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          name: string
+          route_number: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          name?: string
+          route_number?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      bus_stops: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: number
+          latitude: number
+          longitude: number
+          name: string
+          stop_id: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: number
+          latitude: number
+          longitude: number
+          name: string
+          stop_id: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: number
+          latitude?: number
+          longitude?: number
+          name?: string
+          stop_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -143,6 +286,93 @@ export type Database = {
         }
         Relationships: []
       }
+      route_schedules: {
+        Row: {
+          arrival_time: string
+          created_at: string
+          day_type: string
+          departure_time: string
+          id: number
+          route_id: number
+          stop_id: number
+          updated_at: string
+        }
+        Insert: {
+          arrival_time: string
+          created_at?: string
+          day_type: string
+          departure_time: string
+          id?: number
+          route_id: number
+          stop_id: number
+          updated_at?: string
+        }
+        Update: {
+          arrival_time?: string
+          created_at?: string
+          day_type?: string
+          departure_time?: string
+          id?: number
+          route_id?: number
+          stop_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_schedules_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "bus_routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_schedules_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "bus_stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      route_stops: {
+        Row: {
+          created_at: string
+          id: number
+          route_id: number
+          stop_id: number
+          stop_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          route_id: number
+          stop_id: number
+          stop_order: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          route_id?: number
+          stop_id?: number
+          stop_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "bus_routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_stops_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "bus_stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_playlists: {
         Row: {
           created_at: string
@@ -170,12 +400,46 @@ export type Database = {
         }
         Relationships: []
       }
+      scraped_data: {
+        Row: {
+          data: Json
+          domain: string
+          id: string
+          pages_scraped: number
+          scraped_at: string
+          url: string
+        }
+        Insert: {
+          data: Json
+          domain: string
+          id?: string
+          pages_scraped: number
+          scraped_at?: string
+          url: string
+        }
+        Update: {
+          data?: Json
+          domain?: string
+          id?: string
+          pages_scraped?: number
+          scraped_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_logs_count_by_service: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          service: string
+          count: number
+          last_used: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

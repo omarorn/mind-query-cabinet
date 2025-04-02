@@ -1,5 +1,5 @@
 
-import { getGeminiKey } from "./keyUtils";
+import { getGeminiKey, storeGeminiKey } from "./keyUtils";
 
 export interface GeminiResponse {
   candidates: Array<{
@@ -12,10 +12,47 @@ export interface GeminiResponse {
 }
 
 /**
+ * Attempts to fetch the Gemini API key from Supabase Edge Function
+ */
+async function fetchGeminiKeyFromEdge(): Promise<string | null> {
+  try {
+    console.log('Attempting to fetch Gemini API key from edge function...');
+    const response = await fetch('/api/get-gemini-key', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error fetching Gemini API key:', errorData);
+      return null;
+    }
+
+    const data = await response.json();
+    if (data.key) {
+      // Store the key locally for future use
+      storeGeminiKey(data.key);
+      return data.key;
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch Gemini API key:', error);
+    return null;
+  }
+}
+
+/**
  * Makes a request to the Gemini API with the given prompt
  */
 export const callGeminiAPI = async (prompt: string): Promise<string> => {
-  const apiKey = getGeminiKey();
+  let apiKey = getGeminiKey();
+  
+  // If no API key is available locally, try to fetch from edge function
+  if (!apiKey) {
+    apiKey = await fetchGeminiKeyFromEdge();
+  }
   
   if (!apiKey) {
     console.error('Gemini API lykill vantar');
