@@ -47,11 +47,12 @@ async function fetchGeminiKeyFromEdge(): Promise<string | null> {
  * Makes a request to the Gemini API with the given prompt
  */
 export const callGeminiAPI = async (prompt: string): Promise<string> => {
-  let apiKey = getGeminiKey();
+  // Always try to fetch from edge function first before using local storage
+  let apiKey = await fetchGeminiKeyFromEdge();
   
-  // If no API key is available locally, try to fetch from edge function
+  // If the edge function didn't return a key, try to get one from local storage
   if (!apiKey) {
-    apiKey = await fetchGeminiKeyFromEdge();
+    apiKey = getGeminiKey();
   }
   
   if (!apiKey) {

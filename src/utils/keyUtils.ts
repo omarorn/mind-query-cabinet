@@ -11,9 +11,6 @@ export const storeGeminiKey = (key: string): void => {
 };
 
 export const getGeminiKey = (): string | null => {
-  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (envKey) return envKey;
-  
   return localStorage.getItem(GEMINI_KEY_STORAGE);
 };
 
