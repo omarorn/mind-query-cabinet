@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -73,8 +73,8 @@ const APIKeyInput: React.FC = () => {
     }
   };
 
-  // React effect to check for server key when component mounts
-  React.useEffect(() => {
+  // Effect to check for server key when component mounts
+  useEffect(() => {
     checkForServerKey();
   }, []);
 
