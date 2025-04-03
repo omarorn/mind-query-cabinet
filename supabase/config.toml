@@ -1,1 +1,5 @@
-project_id = "xzmzfdoctqegsvppyaxg"
+
+project_id = "your_project_id"
+
+[functions.text-to-speech]
+verify_jwt = true

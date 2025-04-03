@@ -14,9 +14,16 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - ✅ Icelandic language support
 - ✅ Easter eggs and animations for fun interactions
 - ✅ Creatomate integration for content publishing
-- ✅ Text-to-speech functionality for answers and questions
+- ✅ Text-to-speech functionality using OpenAI's TTS API
 
 ## Recent Updates
+
+### 2023-10-26
+- Updated text-to-speech functionality to use OpenAI's TTS API
+- Added Supabase Edge Function to securely call the OpenAI API
+- Enhanced voice options for better audio quality
+- Improved error handling and fallback to browser TTS
+- Updated SpeechButton component for better user experience
 
 ### 2023-10-25
 - Implemented text-to-speech functionality for both questions and answers
@@ -35,7 +42,7 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - Updated todo.md and created lovablelog.md
 
 ## Current Sprint
-- 🔄 Testing text-to-speech integration
+- 🔄 Testing OpenAI TTS integration
 - 🔄 Testing AI question generation with different prompts
 - 🔄 Testing Creatomate integration
 - 🔄 Implementing additional UI animations
@@ -51,11 +58,11 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - Create a comprehensive admin dashboard
 - Implement a reporting system for inappropriate content
 - Add voice selection options for text-to-speech
-- Integrate with OpenAI's TTS API for higher quality voices
+- Enhance voice quality and speech patterns
 
 ## Technical Notes
 - The application uses Gemini AI for generating questions and answers
-- Text-to-speech functionality uses the browser's built-in SpeechSynthesis API
+- Text-to-speech functionality uses OpenAI's TTS API with fallback to browser's built-in SpeechSynthesis
 - State management is handled through React Context API
 - The UI is built with shadcn/ui components
 - Animations are implemented using Framer Motion
@@ -66,5 +73,4 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - Mobile responsiveness can be enhanced for better experience on small screens
 - QAContext is getting large and should be refactored into smaller pieces
 - Some AI responses may not parse correctly if they don't match expected format
-- Browser text-to-speech has limited language support for Icelandic
-- Need to improve voice quality with specialized text-to-speech APIs
+- Need to add user interface for selecting different voices for TTS

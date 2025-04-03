@@ -2,19 +2,21 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Loader2 } from 'lucide-react';
-import { speakText, stopSpeaking, isSpeaking } from '@/utils/textToSpeech';
+import { speakText, stopSpeaking, isSpeaking, VoiceOption } from '@/utils/textToSpeech';
 import { useToast } from '@/hooks/use-toast';
 
 interface SpeechButtonProps {
   text: string;
   className?: string;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  voice?: VoiceOption;
 }
 
 const SpeechButton: React.FC<SpeechButtonProps> = ({ 
   text, 
   className = "", 
-  variant = "outline" 
+  variant = "outline",
+  voice = "nova"
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +53,7 @@ const SpeechButton: React.FC<SpeechButtonProps> = ({
     
     try {
       setIsLoading(true);
-      const success = await speakText(text);
+      const success = await speakText(text, voice);
       
       if (success) {
         setIsPlaying(true);
