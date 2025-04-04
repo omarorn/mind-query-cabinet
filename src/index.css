@@ -4,6 +4,7 @@
 @import "tailwindcss/utilities";
 
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
 @layer base {
   :root {
@@ -56,85 +57,152 @@
   }
 
   body {
-    font-family: 'Comic Neue', sans-serif;
+    font-family: 'Nunito', 'Comic Neue', sans-serif;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed;
   }
 }
 
 @layer components {
   .qa-card {
-    @apply p-6 bg-white rounded-xl shadow-sm border-2 border-purple-200 mb-4;
+    @apply p-6 bg-white rounded-xl shadow-sm border-2 border-purple-200 mb-4 relative overflow-hidden;
+  }
+
+  .qa-card::before {
+    @apply content-[''] absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400;
   }
 
   .qa-button {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-qa-primary text-white hover:bg-purple-500 h-10 px-4 py-2;
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-qa-primary text-white hover:bg-purple-500 h-10 px-4 py-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200;
   }
   
   .qa-secondary-button {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-2 border-purple-300 bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-2 border-purple-300 bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200;
   }
 
   .crayon-style {
-    @apply font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
+    @apply font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-rainbow;
   }
   
+  /* Animal categories with pet icons or animations */
   .category-animals {
-    @apply bg-amber-100 text-amber-800 border-amber-300;
+    @apply bg-amber-100 text-amber-800 border-amber-300 relative pl-7;
+  }
+  .category-animals::before {
+    content: "🐾";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-space {
-    @apply bg-blue-100 text-blue-800 border-blue-300;
+    @apply bg-blue-100 text-blue-800 border-blue-300 relative pl-7;
+  }
+  .category-space::before {
+    content: "🚀";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-nature {
-    @apply bg-green-100 text-green-800 border-green-300;
+    @apply bg-green-100 text-green-800 border-green-300 relative pl-7;
+  }
+  .category-nature::before {
+    content: "🌿";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-science {
-    @apply bg-cyan-100 text-cyan-800 border-cyan-300;
+    @apply bg-cyan-100 text-cyan-800 border-cyan-300 relative pl-7;
+  }
+  .category-science::before {
+    content: "🔬";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-history {
-    @apply bg-stone-100 text-stone-800 border-stone-300;
+    @apply bg-stone-100 text-stone-800 border-stone-300 relative pl-7;
+  }
+  .category-history::before {
+    content: "📜";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-art {
-    @apply bg-rose-100 text-rose-800 border-rose-300;
+    @apply bg-rose-100 text-rose-800 border-rose-300 relative pl-7;
+  }
+  .category-art::before {
+    content: "🎨";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-music {
-    @apply bg-purple-100 text-purple-800 border-purple-300;
+    @apply bg-purple-100 text-purple-800 border-purple-300 relative pl-7;
+  }
+  .category-music::before {
+    content: "🎵";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-food {
-    @apply bg-orange-100 text-orange-800 border-orange-300;
+    @apply bg-orange-100 text-orange-800 border-orange-300 relative pl-7;
+  }
+  .category-food::before {
+    content: "🍎";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-books {
-    @apply bg-emerald-100 text-emerald-800 border-emerald-300;
+    @apply bg-emerald-100 text-emerald-800 border-emerald-300 relative pl-7;
+  }
+  .category-books::before {
+    content: "📚";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-games {
-    @apply bg-red-100 text-red-800 border-red-300;
+    @apply bg-red-100 text-red-800 border-red-300 relative pl-7;
+  }
+  .category-games::before {
+    content: "🎮";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-puzzles {
-    @apply bg-yellow-100 text-yellow-800 border-yellow-300;
+    @apply bg-yellow-100 text-yellow-800 border-yellow-300 relative pl-7;
+  }
+  .category-puzzles::before {
+    content: "🧩";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-funnyFacts {
-    @apply bg-pink-100 text-pink-800 border-pink-300;
+    @apply bg-pink-100 text-pink-800 border-pink-300 relative pl-7;
+  }
+  .category-funnyFacts::before {
+    content: "😄";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-magic {
-    @apply bg-violet-100 text-violet-800 border-violet-300;
+    @apply bg-violet-100 text-violet-800 border-violet-300 relative pl-7;
+  }
+  .category-magic::before {
+    content: "✨";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-rainbow {
-    @apply bg-gradient-to-r from-red-100 via-yellow-100 to-blue-100 text-gray-800 border-gray-300;
+    @apply bg-gradient-to-r from-red-100 via-yellow-100 to-blue-100 text-gray-800 border-gray-300 relative pl-7;
+  }
+  .category-rainbow::before {
+    content: "🌈";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
   
   .category-surprise {
-    @apply bg-gradient-to-r from-purple-100 via-pink-100 to-orange-100 text-gray-800 border-gray-300;
+    @apply bg-gradient-to-r from-purple-100 via-pink-100 to-orange-100 text-gray-800 border-gray-300 relative pl-7;
+  }
+  .category-surprise::before {
+    content: "🎁";
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2;
   }
 }
 
@@ -170,9 +238,80 @@
   animation: float 3s ease-in-out infinite;
 }
 
+/* Pet animations */
+@keyframes wag {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.wag {
+  transform-origin: bottom center;
+  animation: wag 1s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.bounce {
+  animation: bounce 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* AI glow effect */
+.ai-glow {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.ai-glow:hover {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+/* Glass morphism effect for cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+}
+
 /* Crayon drawing effect */
 .crayon-border {
   border-style: solid;
   border-width: 3px;
   border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0,0 L 100,0 L 100,100 L 0,100 Z' fill='none' stroke='%238B5CF6' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='5,10' /%3E%3C/svg%3E") 1;
+}
+
+/* Friendly pet companion */
+.pet-companion {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.pet-companion:hover {
+  transform: scale(1.1);
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 640px) {
+  .qa-card {
+    @apply p-4 rounded-lg;
+  }
+  
+  .pet-companion {
+    bottom: 10px;
+    right: 10px;
+    transform: scale(0.8);
+  }
+  
+  .pet-companion:hover {
+    transform: scale(0.9);
+  }
 }
