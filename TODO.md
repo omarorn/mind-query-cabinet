@@ -7,7 +7,7 @@
 - [x] Enhance MagicButton visibility and feedback
 - [x] Add more animations for Easter eggs
 - [ ] Test Creatomate integration end-to-end
-- [ ] Add more comprehensive error handling for API calls
+- [x] Add more comprehensive error handling for API calls
 - [x] Implement text-to-speech for answer reading
 
 ## UI/UX Improvements
@@ -15,7 +15,7 @@
 - [x] Add enhanced visual feedback for magic mode
 - [x] Implement more animations for Easter eggs in QuestionCard
 - [x] Add confetti animation when activating magic mode
-- [ ] Improve mobile responsiveness of the question cards
+- [x] Improve mobile responsiveness of the question cards
 - [ ] Add loading states for all API operations
 - [ ] Update category labels with better visual indicators
 - [x] Add speech button to answers for auditory learning
@@ -32,8 +32,8 @@
 - [x] Refactor the QAContext into smaller, more manageable pieces
 - [ ] Optimize image loading with lazy loading
 - [ ] Implement testing for critical components
-- [ ] Integrate with OpenAI TTS API for better speech quality
-- [ ] Support multiple language voice options
+- [x] Integrate with OpenAI TTS API for better speech quality
+- [x] Support multiple language voice options
 
 ## Documentation
 - [x] Create todo.md with prioritized tasks

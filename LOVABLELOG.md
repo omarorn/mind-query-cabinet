@@ -15,8 +15,16 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - ✅ Easter eggs and animations for fun interactions
 - ✅ Creatomate integration for content publishing
 - ✅ Text-to-speech functionality using OpenAI's TTS API
+- ✅ Mobile responsive UI with interactive PetCompanion
 
 ## Recent Updates
+
+### 2025-04-07
+- Enhanced mobile responsiveness across the application
+- Improved PetCompanion component with more kid-friendly interactions
+- Updated UI elements for better family-friendly experience
+- Made application more responsive on iPhone and other mobile devices
+- Added more interactive elements to engage younger users
 
 ### 2023-10-26
 - Updated text-to-speech functionality to use OpenAI's TTS API
@@ -67,10 +75,10 @@ This is a family-friendly Q&A application with Icelandic language support. Users
 - The UI is built with shadcn/ui components
 - Animations are implemented using Framer Motion
 - The Creatomate edge function handles content publishing
+- PetCompanion provides interactive assistance for users
 
 ## Known Issues
 - Loading states need to be improved for better user feedback
-- Mobile responsiveness can be enhanced for better experience on small screens
 - QAContext is getting large and should be refactored into smaller pieces
 - Some AI responses may not parse correctly if they don't match expected format
 - Need to add user interface for selecting different voices for TTS
